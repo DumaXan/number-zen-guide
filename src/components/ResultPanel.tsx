@@ -1,0 +1,134 @@
+import { SniperResult } from "@/lib/sniper";
+import {
+  Rocket,
+  ShieldAlert,
+  Activity,
+  Hash,
+  TrendingUp,
+} from "lucide-react";
+
+interface ResultPanelProps {
+  result: SniperResult;
+  onReset: () => void;
+}
+
+const GameCard = ({
+  label,
+  numbers,
+  soma,
+  pares,
+  delay,
+}: {
+  label: string;
+  numbers: number[];
+  soma: number;
+  pares: number;
+  delay: string;
+}) => (
+  <div className="neon-card rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: delay }}>
+    <div className="flex items-center justify-between mb-3">
+      <h3 className="font-display text-xs tracking-widest text-neon-cyan uppercase">{label}</h3>
+      <div className="flex gap-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <TrendingUp className="w-3 h-3" /> {soma}
+        </span>
+        <span className="flex items-center gap-1">
+          <Hash className="w-3 h-3" /> {pares}P/{15 - pares}I
+        </span>
+      </div>
+    </div>
+    <div className="grid grid-cols-5 gap-1.5">
+      {numbers.map((n) => (
+        <div
+          key={n}
+          className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-xs font-bold text-primary"
+        >
+          {String(n).padStart(2, "0")}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
+  return (
+    <div className="space-y-4">
+      {/* Status */}
+      <div
+        className={`neon-card rounded-xl p-5 text-center animate-fade-in-up ${
+          result.aprovado ? "" : "border-destructive/30"
+        }`}
+        style={{ animationDelay: "0ms" }}
+      >
+        <div className="flex items-center justify-center gap-2 mb-2">
+          {result.aprovado ? (
+            <Rocket className="w-6 h-6 text-primary animate-pulse-neon" />
+          ) : (
+            <ShieldAlert className="w-6 h-6 text-destructive" />
+          )}
+          <h2 className="font-display text-lg tracking-wider">
+            {result.aprovado ? (
+              <span className="text-primary neon-text">SINCRONIA TOTAL</span>
+            ) : (
+              <span className="text-destructive">OPERAÇÃO CANCELADA</span>
+            )}
+          </h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {result.aprovado
+            ? "Cenário matematicamente ideal. Faça os dois jogos."
+            : "Filtros de segurança ativados. Economize para o próximo concurso."}
+        </p>
+      </div>
+
+      {/* Alertas */}
+      {result.alertas.length > 0 && (
+        <div
+          className="neon-card rounded-xl p-4 border-warning/20 animate-fade-in-up"
+          style={{ animationDelay: "100ms" }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Activity className="w-4 h-4 text-warning" />
+            <span className="font-display text-xs tracking-widest text-warning uppercase">
+              Alertas
+            </span>
+          </div>
+          <ul className="space-y-1">
+            {result.alertas.map((a, i) => (
+              <li key={i} className="text-sm text-warning/80 flex items-start gap-2">
+                <span className="text-warning mt-0.5">→</span> {a}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Game Cards */}
+      <GameCard
+        label="Cartão 02"
+        numbers={result.g2}
+        soma={result.somaG2}
+        pares={result.paresG2}
+        delay="200ms"
+      />
+      <GameCard
+        label="Cartão 03"
+        numbers={result.g3}
+        soma={result.somaG3}
+        pares={result.paresG3}
+        delay="300ms"
+      />
+
+      {/* Reset */}
+      <button
+        onClick={onReset}
+        className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-muted text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] animate-fade-in-up"
+        style={{ animationDelay: "400ms" }}
+      >
+        Nova Análise
+      </button>
+    </div>
+  );
+};
+
+export default ResultPanel;
