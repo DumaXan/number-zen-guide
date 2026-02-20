@@ -105,14 +105,14 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
 
       {/* Game Cards */}
       <GameCard
-        label="Cartão 02"
+        label="Cartão 01"
         numbers={result.g2}
         soma={result.somaG2}
         pares={result.paresG2}
         delay="200ms"
       />
       <GameCard
-        label="Cartão 03"
+        label="Cartão 02"
         numbers={result.g3}
         soma={result.somaG3}
         pares={result.paresG3}
