@@ -47,7 +47,7 @@ const Index = () => {
             </h1>
           </div>
           <p className="font-display text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-            Protocolo Tudo ou Nada
+            Jogue na Lotofácil com estatística
           </p>
           <div className="flex items-center justify-center gap-4 mt-3 text-[10px] text-muted-foreground font-display tracking-wider">
             <span className="flex items-center gap-1">
