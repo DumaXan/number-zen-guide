@@ -59,6 +59,16 @@ const Index = () => {
           </div>
         </header>
 
+        {/* Intro text */}
+        <div className="neon-card rounded-xl p-4 mb-6 animate-fade-in-up">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Esse aplicativo foi desenvolvido com base nos estudos do Professor <span className="text-primary font-semibold">Eustáquio Salamanca</span>, mestre em estatística que passou os últimos 8 anos estudando padrões nos jogos da Lotofácil para aumentar as chances de ao menos garantir 11, 12, 13 ou mesmo 14 pontos. Em todos os concursos haverá os jogos prontos que devem ser feitos para o próximo. Pode haver dias que será melhor não fazer nenhuma aposta, pois o algoritmo não acha viável segundo as estatísticas.
+          </p>
+          <p className="text-[10px] text-warning mt-2 font-display tracking-wider uppercase">
+            ⚠️ Jogue com responsabilidade.
+          </p>
+        </div>
+
         {/* Loading */}
         {isLoading && (
           <div className="neon-card rounded-xl p-8 text-center animate-fade-in-up">
