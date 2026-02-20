@@ -6,52 +6,52 @@
 
 @layer base {
   :root {
-    --background: 220 20% 6%;
-    --foreground: 160 100% 90%;
+    --background: 280 20% 10%;
+    --foreground: 0 0% 88%;
 
-    --card: 220 18% 10%;
-    --card-foreground: 160 60% 85%;
+    --card: 280 18% 15%;
+    --card-foreground: 0 0% 85%;
 
-    --popover: 220 18% 10%;
-    --popover-foreground: 160 60% 85%;
+    --popover: 280 18% 15%;
+    --popover-foreground: 0 0% 85%;
 
-    --primary: 155 100% 45%;
-    --primary-foreground: 220 20% 6%;
+    --primary: 330 33% 44%;
+    --primary-foreground: 0 0% 96%;
 
-    --secondary: 200 80% 50%;
-    --secondary-foreground: 220 20% 6%;
+    --secondary: 300 14% 44%;
+    --secondary-foreground: 0 0% 96%;
 
-    --muted: 220 15% 15%;
-    --muted-foreground: 160 20% 55%;
+    --muted: 280 12% 20%;
+    --muted-foreground: 300 8% 58%;
 
-    --accent: 155 100% 45%;
-    --accent-foreground: 220 20% 6%;
+    --accent: 330 50% 30%;
+    --accent-foreground: 0 0% 96%;
 
     --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 155 40% 18%;
-    --input: 220 15% 15%;
-    --ring: 155 100% 45%;
+    --border: 280 15% 25%;
+    --input: 280 12% 20%;
+    --ring: 330 33% 44%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 220 18% 10%;
-    --sidebar-foreground: 160 60% 85%;
-    --sidebar-primary: 155 100% 45%;
-    --sidebar-primary-foreground: 220 20% 6%;
-    --sidebar-accent: 220 15% 15%;
-    --sidebar-accent-foreground: 160 60% 85%;
-    --sidebar-border: 155 40% 18%;
-    --sidebar-ring: 155 100% 45%;
+    --sidebar-background: 280 18% 15%;
+    --sidebar-foreground: 0 0% 85%;
+    --sidebar-primary: 330 33% 44%;
+    --sidebar-primary-foreground: 0 0% 96%;
+    --sidebar-accent: 280 12% 20%;
+    --sidebar-accent-foreground: 0 0% 85%;
+    --sidebar-border: 280 15% 25%;
+    --sidebar-ring: 330 33% 44%;
 
     /* Custom tokens */
-    --neon-glow: 155 100% 45%;
-    --neon-cyan: 185 100% 50%;
+    --neon-glow: 330 33% 44%;
+    --neon-cyan: 60 25% 81%;
     --warning: 45 100% 55%;
-    --warning-foreground: 220 20% 6%;
-    --success: 155 100% 45%;
-    --tactical-grid: 220 15% 12%;
+    --warning-foreground: 280 20% 10%;
+    --success: 150 60% 40%;
+    --tactical-grid: 280 12% 14%;
 
     font-family: 'Inter', sans-serif;
   }
