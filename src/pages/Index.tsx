@@ -152,6 +152,18 @@ const Index = () => {
             )}
           </div>
         )}
+
+        {/* Privacy & Terms */}
+        <div className="mt-8 text-center">
+          <a
+            href="https://sites.google.com/view/privacysniperlotofacil"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] font-display tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors underline underline-offset-4"
+          >
+            Política de Privacidade e Termos de Uso
+          </a>
+        </div>
       </div>
     </div>
   );
