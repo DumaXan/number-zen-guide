@@ -108,7 +108,7 @@ const Index = () => {
               {latest.dezenas.map((n) => (
                 <div
                   key={n}
-                  className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-xs font-bold text-primary"
+                  className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-lg font-bold text-primary"
                 >
                   {String(n).padStart(2, "0")}
                 </div>

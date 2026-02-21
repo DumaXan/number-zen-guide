@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SniperResult } from "@/lib/sniper";
 import {
   Rocket,
@@ -5,6 +6,9 @@ import {
   Activity,
   Hash,
   TrendingUp,
+  Copy,
+  Check,
+  Share2,
 } from "lucide-react";
 
 interface ResultPanelProps {
@@ -41,7 +45,7 @@ const GameCard = ({
       {numbers.map((n) => (
         <div
           key={n}
-          className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-xs font-bold text-primary"
+          className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-lg font-bold text-primary"
         >
           {String(n).padStart(2, "0")}
         </div>
@@ -50,7 +54,48 @@ const GameCard = ({
   </div>
 );
 
+const formatNumbers = (numbers: number[]) =>
+  numbers.map((n) => String(n).padStart(2, "0")).join(" - ");
+
 const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
+  const [copied, setCopied] = useState(false);
+
+  const getShareText = () => {
+    let text = "🎯 *SNIPER - Lotofácil*\n\n";
+    text += `📋 *Cartão 01:*\n${formatNumbers(result.g2)}\n`;
+    text += `Soma: ${result.somaG2} | ${result.paresG2}P/${15 - result.paresG2}I\n\n`;
+    text += `📋 *Cartão 02:*\n${formatNumbers(result.g3)}\n`;
+    text += `Soma: ${result.somaG3} | ${result.paresG3}P/${15 - result.paresG3}I\n\n`;
+    text += result.aprovado ? "✅ Cenário aprovado!" : "⛔ Operação cancelada.";
+    if (result.alertas.length > 0) {
+      text += "\n\n⚠️ Alertas:\n" + result.alertas.map((a) => `→ ${a}`).join("\n");
+    }
+    return text;
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(getShareText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback
+      const textarea = document.createElement("textarea");
+      textarea.value = getShareText();
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleWhatsApp = () => {
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(getShareText())}`;
+    window.open(url, "_blank");
+  };
+
   return (
     <div className="space-y-4">
       {/* Status */}
@@ -118,6 +163,27 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
         pares={result.paresG3}
         delay="300ms"
       />
+
+      {/* Share buttons */}
+      <div
+        className="flex gap-3 animate-fade-in-up"
+        style={{ animationDelay: "350ms" }}
+      >
+        <button
+          onClick={handleCopy}
+          className="flex-1 py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+          {copied ? "Copiado!" : "Copiar"}
+        </button>
+        <button
+          onClick={handleWhatsApp}
+          className="flex-1 py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-success/20 text-success hover:bg-success/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <Share2 className="w-4 h-4" />
+          WhatsApp
+        </button>
+      </div>
 
       {/* Reset */}
       <button
