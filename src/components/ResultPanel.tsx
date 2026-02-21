@@ -45,7 +45,7 @@ const GameCard = ({
       {numbers.map((n) => (
         <div
           key={n}
-          className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-lg font-bold text-primary"
+          className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-xl font-bold text-primary"
         >
           {String(n).padStart(2, "0")}
         </div>
@@ -92,7 +92,7 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
   };
 
   const handleWhatsApp = () => {
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(getShareText())}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(getShareText())}`;
     window.open(url, "_blank");
   };
 
