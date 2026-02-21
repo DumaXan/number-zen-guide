@@ -8,7 +8,6 @@ import {
   TrendingUp,
   Copy,
   Check,
-  Share2,
 } from "lucide-react";
 
 interface ResultPanelProps {
@@ -91,10 +90,6 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
     }
   };
 
-  const handleWhatsApp = () => {
-    const url = `https://wa.me/?text=${encodeURIComponent(getShareText())}`;
-    window.open(url, "_blank");
-  };
 
   return (
     <div className="space-y-4">
@@ -165,25 +160,14 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
       />
 
       {/* Share buttons */}
-      <div
-        className="flex gap-3 animate-fade-in-up"
+      <button
+        onClick={handleCopy}
+        className="w-full py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] flex items-center justify-center gap-2 animate-fade-in-up"
         style={{ animationDelay: "350ms" }}
       >
-        <button
-          onClick={handleCopy}
-          className="flex-1 py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-        >
-          {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-          {copied ? "Copiado!" : "Copiar"}
-        </button>
-        <button
-          onClick={handleWhatsApp}
-          className="flex-1 py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-success/20 text-success hover:bg-success/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-        >
-          <Share2 className="w-4 h-4" />
-          WhatsApp
-        </button>
-      </div>
+        {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+        {copied ? "Copiado!" : "Copiar"}
+      </button>
 
       {/* Reset */}
       <button
