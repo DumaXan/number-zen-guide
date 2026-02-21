@@ -48,7 +48,7 @@ const NumberInputGrid = ({ onSubmit }: NumberInputGridProps) => {
               key={n}
               onClick={() => toggle(n)}
               className={`
-                relative aspect-square rounded-lg font-display text-sm font-bold
+                relative aspect-square rounded-lg font-display text-xl font-bold
                 transition-all duration-200 active:scale-95
                 ${
                   isSelected
