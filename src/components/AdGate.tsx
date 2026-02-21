@@ -1,23 +1,38 @@
-import { useState, useEffect } from "react";
-import { Play, Timer } from "lucide-react";
+import { useState } from "react";
+import { Play, Timer, AlertCircle } from "lucide-react";
+import { AdMob, RewardAdOptions, AdMobRewardItem } from "@capacitor-community/admob";
 
 interface AdGateProps {
   onComplete: () => void;
 }
 
 const AdGate = ({ onComplete }: AdGateProps) => {
-  const [phase, setPhase] = useState<"ready" | "watching" | "done">("ready");
-  const [countdown, setCountdown] = useState(5);
+  const [phase, setPhase] = useState<"ready" | "loading" | "done">("ready");
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (phase !== "watching") return;
-    if (countdown <= 0) {
-      setPhase("done");
-      return;
+  const showRewardedAd = async () => {
+    setPhase("loading");
+    setError(null);
+
+    const options: RewardAdOptions = {
+      adId: "ca-app-pub-3940256099942544/5224354917", // ID de Teste oficial do Google
+      isTesting: true,
+    };
+
+    try {
+      await AdMob.prepareRewardVideoAd(options);
+      const reward: AdMobRewardItem = await AdMob.showRewardVideoAd();
+
+      if (reward) {
+        console.log("Parabéns! Cartões liberados pelo Professor Eustáquio.");
+        setPhase("done");
+      }
+    } catch (err) {
+      console.error("Erro ao carregar o anúncio:", err);
+      setError("Ops! O vídeo não carregou. Tente novamente para liberar os jogos.");
+      setPhase("ready");
     }
-    const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [phase, countdown]);
+  };
 
   if (phase === "ready") {
     return (
@@ -31,8 +46,14 @@ const AdGate = ({ onComplete }: AdGateProps) => {
         <p className="text-sm text-muted-foreground mb-5">
           Assista a um breve anúncio para liberar seus cartões gerados pelo Protocolo Sniper.
         </p>
+        {error && (
+          <div className="flex items-center gap-2 text-destructive text-sm mb-4 justify-center">
+            <AlertCircle className="w-4 h-4" />
+            <span>{error}</span>
+          </div>
+        )}
         <button
-          onClick={() => setPhase("watching")}
+          onClick={showRewardedAd}
           className="w-full py-3.5 rounded-lg font-display text-sm tracking-widest uppercase bg-primary text-primary-foreground neon-border hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
           <Play className="w-4 h-4" />
@@ -42,29 +63,16 @@ const AdGate = ({ onComplete }: AdGateProps) => {
     );
   }
 
-  if (phase === "watching") {
-    const progress = ((5 - countdown) / 5) * 100;
+  if (phase === "loading") {
     return (
       <div className="neon-card rounded-xl p-6 text-center animate-fade-in-up">
         <div className="w-16 h-16 rounded-full bg-warning/10 border border-warning/20 flex items-center justify-center mx-auto mb-4">
           <Timer className="w-7 h-7 text-warning animate-pulse-neon" />
         </div>
         <h3 className="font-display text-sm tracking-widest text-warning uppercase mb-2">
-          Anúncio em Andamento
+          Carregando Anúncio...
         </h3>
-        <p className="text-4xl font-display font-bold text-warning mb-4">{countdown}s</p>
-
-        {/* Simulated ad placeholder */}
-        <div className="w-full h-40 rounded-lg bg-muted/50 border border-border flex items-center justify-center mb-4">
-          <span className="text-xs text-muted-foreground font-display tracking-widest">ESPAÇO PUBLICITÁRIO</span>
-        </div>
-
-        <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
-          <div
-            className="h-full bg-warning rounded-full transition-all duration-1000 ease-linear"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        <p className="text-sm text-muted-foreground">Aguarde enquanto o vídeo é preparado.</p>
       </div>
     );
   }
