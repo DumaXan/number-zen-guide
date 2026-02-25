@@ -26,10 +26,13 @@ const AdGate = ({ onComplete }: AdGateProps) => {
       if (reward) {
         console.log("Parabéns! Cartões liberados pelo Professor Eustáquio.");
         setPhase("done");
+      } else {
+        setError("O vídeo não foi concluído. Tente novamente mais tarde.");
+        setPhase("ready");
       }
     } catch (err) {
       console.error("Erro ao carregar o anúncio:", err);
-      setError("Ops! O vídeo não carregou. Tente novamente para liberar os jogos.");
+      setError("Não foi possível carregar o anúncio. Tente novamente mais tarde.");
       setPhase("ready");
     }
   };
