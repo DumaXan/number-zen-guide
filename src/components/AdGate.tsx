@@ -15,8 +15,8 @@ const AdGate = ({ onComplete }: AdGateProps) => {
     setError(null);
 
     const options: RewardAdOptions = {
-      adId: "ca-app-pub-3940256099942544/5224354917", // ID de Teste oficial do Google
-      isTesting: true,
+      adId: "ca-app-pub-3947057911901585/6717956434",
+      isTesting: false,
     };
 
     try {
