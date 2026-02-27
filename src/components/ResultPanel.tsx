@@ -16,17 +16,17 @@ import {
 const SAFETY_MESSAGES = [
   {
     icon: Crosshair,
-    title: "Aviso do Prof. Eustáquio Salamanca: Recuar também é estratégia. 🎯",
+    title: "Aviso do Prof. Eustáquio Salamanca: Recuar também é estratégia.",
     body: "Após analisar os padrões de hoje, o algoritmo identificou uma baixa probabilidade de acerto para as tendências atuais. Para um Sniper de elite, a vitória consiste em saber não apenas o que apostar, mas o momento exato de quando apostar. Poupe sua munição para o próximo sorteio favorável.",
   },
   {
     icon: Ban,
-    title: "Análise de Hoje: Fora do Alvo. 🚫",
+    title: "Análise de Hoje: Fora do Alvo.",
     body: "Segundo os cálculos estatísticos do Prof. Salamanca, as combinações de hoje não atingiram o nível de confiança necessário. Não geramos jogos hoje para proteger seu capital. Lembre-se: ser Sniper é ser seletivo para ser letal.",
   },
   {
     icon: Telescope,
-    title: "Hoje não é dia de tiro, é dia de observação. 🔭",
+    title: "Hoje não é dia de tiro, é dia de observação.",
     body: "O Professor Salamanca analisou os últimos 8 anos de resultados e concluiu que o cenário de hoje é instável. Nossa estratégia é clara: só sugerimos apostas quando a matemática está ao nosso favor. Aguarde o próximo sinal para um jogo com maior potencial de acerto.",
   },
 ];
