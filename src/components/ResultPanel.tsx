@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SniperResult } from "@/lib/sniper";
 import {
   Rocket,
@@ -8,7 +8,28 @@ import {
   TrendingUp,
   Copy,
   Check,
+  Crosshair,
+  Ban,
+  Telescope,
 } from "lucide-react";
+
+const SAFETY_MESSAGES = [
+  {
+    icon: Crosshair,
+    title: "Aviso do Prof. Eustáquio Salamanca: Recuar também é estratégia. 🎯",
+    body: "Após analisar os padrões de hoje, o algoritmo identificou uma baixa probabilidade de acerto para as tendências atuais. Para um Sniper de elite, a vitória consiste em saber não apenas o que apostar, mas o momento exato de quando apostar. Poupe sua munição para o próximo sorteio favorável.",
+  },
+  {
+    icon: Ban,
+    title: "Análise de Hoje: Fora do Alvo. 🚫",
+    body: "Segundo os cálculos estatísticos do Prof. Salamanca, as combinações de hoje não atingiram o nível de confiança necessário. Não geramos jogos hoje para proteger seu capital. Lembre-se: ser Sniper é ser seletivo para ser letal.",
+  },
+  {
+    icon: Telescope,
+    title: "Hoje não é dia de tiro, é dia de observação. 🔭",
+    body: "O Professor Salamanca analisou os últimos 8 anos de resultados e concluiu que o cenário de hoje é instável. Nossa estratégia é clara: só sugerimos apostas quando a matemática está ao nosso favor. Aguarde o próximo sinal para um jogo com maior potencial de acerto.",
+  },
+];
 
 interface ResultPanelProps {
   result: SniperResult;
@@ -72,13 +93,17 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
     return text;
   };
 
+  const safetyMessage = useMemo(
+    () => SAFETY_MESSAGES[Math.floor(Math.random() * SAFETY_MESSAGES.length)],
+    []
+  );
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(getShareText());
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // fallback
       const textarea = document.createElement("textarea");
       textarea.value = getShareText();
       document.body.appendChild(textarea);
@@ -89,7 +114,6 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
       setTimeout(() => setCopied(false), 2000);
     }
   };
-
 
   return (
     <div className="space-y-4">
@@ -121,53 +145,70 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
         </p>
       </div>
 
-      {/* Alertas */}
-      {result.alertas.length > 0 && (
+      {/* When NOT approved: show safety message instead of cards */}
+      {!result.aprovado ? (
         <div
-          className="neon-card rounded-xl p-4 border-warning/20 animate-fade-in-up"
+          className="neon-card rounded-xl p-6 animate-fade-in-up border-warning/20"
           style={{ animationDelay: "100ms" }}
         >
-          <div className="flex items-center gap-2 mb-2">
-            <Activity className="w-4 h-4 text-warning" />
-            <span className="font-display text-xs tracking-widest text-warning uppercase">
-              Alertas
-            </span>
+          <div className="flex justify-center mb-4">
+            <safetyMessage.icon className="w-10 h-10 text-warning" />
           </div>
-          <ul className="space-y-1">
-            {result.alertas.map((a, i) => (
-              <li key={i} className="text-sm text-warning/80 flex items-start gap-2">
-                <span className="text-warning mt-0.5">→</span> {a}
-              </li>
-            ))}
-          </ul>
+          <h3 className="font-display text-sm tracking-wider text-warning text-center mb-3">
+            {safetyMessage.title}
+          </h3>
+          <p className="text-xs text-muted-foreground leading-relaxed text-justify">
+            {safetyMessage.body}
+          </p>
+
+          {/* Alertas técnicos */}
+          {result.alertas.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="w-3.5 h-3.5 text-warning" />
+                <span className="font-display text-[10px] tracking-widest text-warning uppercase">
+                  Detalhes Técnicos
+                </span>
+              </div>
+              <ul className="space-y-1">
+                {result.alertas.map((a, i) => (
+                  <li key={i} className="text-[11px] text-warning/70 flex items-start gap-2">
+                    <span className="text-warning mt-0.5">→</span> {a}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+      ) : (
+        <>
+          {/* Game Cards */}
+          <GameCard
+            label="Cartão 01"
+            numbers={result.g2}
+            soma={result.somaG2}
+            pares={result.paresG2}
+            delay="200ms"
+          />
+          <GameCard
+            label="Cartão 02"
+            numbers={result.g3}
+            soma={result.somaG3}
+            pares={result.paresG3}
+            delay="300ms"
+          />
+
+          {/* Share button - only when approved */}
+          <button
+            onClick={handleCopy}
+            className="w-full py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] flex items-center justify-center gap-2 animate-fade-in-up"
+            style={{ animationDelay: "350ms" }}
+          >
+            {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+            {copied ? "Copiado!" : "Copiar"}
+          </button>
+        </>
       )}
-
-      {/* Game Cards */}
-      <GameCard
-        label="Cartão 01"
-        numbers={result.g2}
-        soma={result.somaG2}
-        pares={result.paresG2}
-        delay="200ms"
-      />
-      <GameCard
-        label="Cartão 02"
-        numbers={result.g3}
-        soma={result.somaG3}
-        pares={result.paresG3}
-        delay="300ms"
-      />
-
-      {/* Share buttons */}
-      <button
-        onClick={handleCopy}
-        className="w-full py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] flex items-center justify-center gap-2 animate-fade-in-up"
-        style={{ animationDelay: "350ms" }}
-      >
-        {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-        {copied ? "Copiado!" : "Copiar"}
-      </button>
 
       {/* Reset */}
       <button
