@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import NumberInputGrid from "@/components/NumberInputGrid";
 import ResultPanel from "@/components/ResultPanel";
@@ -7,11 +7,27 @@ import AdGate from "@/components/AdGate";
 import { runSniperAlgorithm, SniperResult } from "@/lib/sniper";
 import { fetchLatestResult } from "@/lib/lotofacil-api";
 
+/** Verifica se o horário atual (Brasília, UTC-3) está entre 20:00 e 23:59 */
+function isBlockedTime(): boolean {
+  const now = new Date();
+  // Brasília = UTC-3
+  const utcHours = now.getUTCHours();
+  const brasiliaHour = (utcHours - 3 + 24) % 24;
+  return brasiliaHour >= 20 && brasiliaHour <= 23;
+}
+
 const Index = () => {
   const [result, setResult] = useState<SniperResult | null>(null);
   const [adCompleted, setAdCompleted] = useState(false);
   const [showManual, setShowManual] = useState(false);
   const [mode, setMode] = useState<"auto" | "manual">("auto");
+  const [blocked, setBlocked] = useState(isBlockedTime());
+
+  // Reavalia a cada minuto
+  useEffect(() => {
+    const interval = setInterval(() => setBlocked(isBlockedTime()), 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const { data: latest, isLoading, error } = useQuery({
     queryKey: ["lotofacil-latest"],
@@ -117,8 +133,25 @@ const Index = () => {
           </div>
         )}
 
+        {/* Blocked time message */}
+        {blocked && !result && (
+          <div className="neon-card rounded-xl p-6 text-center animate-fade-in-up mb-4 border-warning/30">
+            <Clock className="w-8 h-8 text-warning mx-auto mb-3 animate-pulse" />
+            <p className="text-sm font-display tracking-wider text-warning mb-1">
+              Aguardando Sorteio
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              O sorteio da Lotofácil acontece às <span className="text-primary font-semibold">21h</span>. 
+              Novos jogos estarão disponíveis após a atualização do resultado.
+            </p>
+            <p className="text-[10px] text-muted-foreground mt-3 font-display tracking-wider uppercase">
+              Apostas encerram às 20h · Resultado após 21h
+            </p>
+          </div>
+        )}
+
         {/* Main flow: auto mode */}
-        {mode === "auto" && latest && !result && (
+        {mode === "auto" && latest && !result && !blocked && (
           <>
             {!adCompleted ? (
               <AdGate onComplete={() => setAdCompleted(true)} />
@@ -135,8 +168,8 @@ const Index = () => {
           <ResultPanel result={result} onReset={handleReset} />
         )}
 
-        {/* Manual simulation toggle */}
-        {!result && (
+        {/* Manual simulation toggle - hidden during blocked time */}
+        {!result && !blocked && (
           <div className="mt-6">
             <button
               onClick={() => setShowManual(!showManual)}
