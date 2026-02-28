@@ -15,7 +15,7 @@ const AdGate = ({ onComplete }: AdGateProps) => {
     setError(null);
 
     const options: RewardAdOptions = {
-      adId: "ca-app-pub-3947057911901585/6717956434",
+      adId: "ca-app-pub-3947057911901585/7268303549",
       isTesting: false,
     };
 
