@@ -164,7 +164,7 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
     setAdError(null);
 
     const options: RewardAdOptions = {
-      adId: "ca-app-pub-3947057911901585/7268303549",
+      adId: "ca-app-pub-3947057911901585/2799114495",
       isTesting: false,
     };
 
