@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { SniperResult } from "@/lib/sniper";
+import { SniperResult, GameResult } from "@/lib/sniper";
 import {
   Rocket,
   ShieldAlert,
@@ -38,15 +38,11 @@ interface ResultPanelProps {
 
 const GameCard = ({
   label,
-  numbers,
-  soma,
-  pares,
+  game,
   delay,
 }: {
   label: string;
-  numbers: number[];
-  soma: number;
-  pares: number;
+  game: GameResult;
   delay: string;
 }) => (
   <div className="neon-card rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: delay }}>
@@ -54,15 +50,15 @@ const GameCard = ({
       <h3 className="font-display text-xs tracking-widest text-neon-cyan uppercase">{label}</h3>
       <div className="flex gap-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
-          <TrendingUp className="w-3 h-3" /> {soma}
+          <TrendingUp className="w-3 h-3" /> {game.attrs.soma}
         </span>
         <span className="flex items-center gap-1">
-          <Hash className="w-3 h-3" /> {pares}P/{15 - pares}I
+          <Hash className="w-3 h-3" /> {game.attrs.pares}P/{15 - game.attrs.pares}I
         </span>
       </div>
     </div>
     <div className="grid grid-cols-5 gap-1.5">
-      {numbers.map((n) => (
+      {game.numbers.map((n) => (
         <div
           key={n}
           className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-xl font-bold text-primary"
@@ -74,21 +70,49 @@ const GameCard = ({
   </div>
 );
 
+const RejectedCard = ({
+  label,
+  motivo,
+  delay,
+}: {
+  label: string;
+  motivo: string;
+  delay: string;
+}) => (
+  <div
+    className="neon-card rounded-xl p-4 animate-fade-in-up border-destructive/30"
+    style={{ animationDelay: delay }}
+  >
+    <div className="flex items-center gap-2 mb-2">
+      <ShieldAlert className="w-4 h-4 text-destructive" />
+      <h3 className="font-display text-xs tracking-widest text-destructive uppercase">{label} — Descartado</h3>
+    </div>
+    <p className="text-xs text-muted-foreground">
+      <span className="text-warning">→</span> {motivo}
+    </p>
+  </div>
+);
+
 const formatNumbers = (numbers: number[]) =>
   numbers.map((n) => String(n).padStart(2, "0")).join(" - ");
 
 const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
   const [copied, setCopied] = useState(false);
+  const anyApproved = result.g2.aprovado || result.g3.aprovado;
+  const bothRejected = !result.g2.aprovado && !result.g3.aprovado;
 
   const getShareText = () => {
     let text = "🎯 *SNIPER - Lotofácil*\n\n";
-    text += `📋 *Cartão 01:*\n${formatNumbers(result.g2)}\n`;
-    text += `Soma: ${result.somaG2} | ${result.paresG2}P/${15 - result.paresG2}I\n\n`;
-    text += `📋 *Cartão 02:*\n${formatNumbers(result.g3)}\n`;
-    text += `Soma: ${result.somaG3} | ${result.paresG3}P/${15 - result.paresG3}I\n\n`;
-    text += result.aprovado ? "✅ Cenário aprovado!" : "⛔ Operação cancelada.";
-    if (result.alertas.length > 0) {
-      text += "\n\n⚠️ Alertas:\n" + result.alertas.map((a) => `→ ${a}`).join("\n");
+    if (result.g2.aprovado) {
+      text += `📋 *Cartão 01:*\n${formatNumbers(result.g2.numbers)}\n`;
+      text += `Soma: ${result.g2.attrs.soma} | ${result.g2.attrs.pares}P/${15 - result.g2.attrs.pares}I\n\n`;
+    }
+    if (result.g3.aprovado) {
+      text += `📋 *Cartão 02:*\n${formatNumbers(result.g3.numbers)}\n`;
+      text += `Soma: ${result.g3.attrs.soma} | ${result.g3.attrs.pares}P/${15 - result.g3.attrs.pares}I\n\n`;
+    }
+    if (bothRejected) {
+      text += "⛔ Nenhum jogo aprovado para este concurso.";
     }
     return text;
   };
@@ -120,33 +144,37 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
       {/* Status */}
       <div
         className={`neon-card rounded-xl p-5 text-center animate-fade-in-up ${
-          result.aprovado ? "" : "border-destructive/30"
+          bothRejected ? "border-destructive/30" : ""
         }`}
         style={{ animationDelay: "0ms" }}
       >
         <div className="flex items-center justify-center gap-2 mb-2">
-          {result.aprovado ? (
+          {anyApproved ? (
             <Rocket className="w-6 h-6 text-primary animate-pulse-neon" />
           ) : (
             <ShieldAlert className="w-6 h-6 text-destructive" />
           )}
           <h2 className="font-display text-lg tracking-wider">
-            {result.aprovado ? (
+            {bothRejected ? (
+              <span className="text-destructive">OPERAÇÃO CANCELADA</span>
+            ) : result.g2.aprovado && result.g3.aprovado ? (
               <span className="text-primary neon-text">SINCRONIA TOTAL</span>
             ) : (
-              <span className="text-destructive">OPERAÇÃO CANCELADA</span>
+              <span className="text-primary neon-text">JOGO PARCIAL</span>
             )}
           </h2>
         </div>
         <p className="text-sm text-muted-foreground">
-          {result.aprovado
+          {bothRejected
+            ? "Filtros de segurança ativados. Economize para o próximo concurso."
+            : result.g2.aprovado && result.g3.aprovado
             ? "Cenário matematicamente ideal. Faça os dois jogos."
-            : "Filtros de segurança ativados. Economize para o próximo concurso."}
+            : "Apenas um cartão passou nos filtros. Jogue com cautela."}
         </p>
       </div>
 
-      {/* When NOT approved: show safety message instead of cards */}
-      {!result.aprovado ? (
+      {/* Both rejected: safety message */}
+      {bothRejected && (
         <div
           className="neon-card rounded-xl p-6 animate-fade-in-up border-warning/20"
           style={{ animationDelay: "100ms" }}
@@ -160,45 +188,35 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
           <p className="text-xs text-muted-foreground leading-relaxed text-justify">
             {safetyMessage.body}
           </p>
-
-          {/* Alertas técnicos */}
-          {result.alertas.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-border/30">
-              <div className="flex items-center gap-2 mb-2">
-                <Activity className="w-3.5 h-3.5 text-warning" />
-                <span className="font-display text-[10px] tracking-widest text-warning uppercase">
-                  Detalhes Técnicos
-                </span>
-              </div>
-              <ul className="space-y-1">
-                {result.alertas.map((a, i) => (
-                  <li key={i} className="text-[11px] text-warning/70 flex items-start gap-2">
-                    <span className="text-warning mt-0.5">→</span> {a}
-                  </li>
-                ))}
-              </ul>
+          <div className="mt-4 pt-4 border-t border-border/30 space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <Activity className="w-3.5 h-3.5 text-warning" />
+              <span className="font-display text-[10px] tracking-widest text-warning uppercase">
+                Motivos do Descarte
+              </span>
             </div>
-          )}
+            <p className="text-[11px] text-warning/70"><span className="text-warning">→</span> G2: {result.g2.motivo}</p>
+            <p className="text-[11px] text-warning/70"><span className="text-warning">→</span> G3: {result.g3.motivo}</p>
+          </div>
         </div>
-      ) : (
-        <>
-          {/* Game Cards */}
-          <GameCard
-            label="Cartão 01"
-            numbers={result.g2}
-            soma={result.somaG2}
-            pares={result.paresG2}
-            delay="200ms"
-          />
-          <GameCard
-            label="Cartão 02"
-            numbers={result.g3}
-            soma={result.somaG3}
-            pares={result.paresG3}
-            delay="300ms"
-          />
+      )}
 
-          {/* Share button - only when approved */}
+      {/* Game cards — show approved ones, show rejected info for rejected ones */}
+      {!bothRejected && (
+        <>
+          {result.g2.aprovado ? (
+            <GameCard label="Cartão 01" game={result.g2} delay="200ms" />
+          ) : (
+            <RejectedCard label="Cartão 01" motivo={result.g2.motivo} delay="200ms" />
+          )}
+
+          {result.g3.aprovado ? (
+            <GameCard label="Cartão 02" game={result.g3} delay="300ms" />
+          ) : (
+            <RejectedCard label="Cartão 02" motivo={result.g3.motivo} delay="300ms" />
+          )}
+
+          {/* Copy button */}
           <button
             onClick={handleCopy}
             className="w-full py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] flex items-center justify-center gap-2 animate-fade-in-up"
