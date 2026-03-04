@@ -169,7 +169,7 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
             ? "Filtros de segurança ativados. Economize para o próximo concurso."
             : result.g2.aprovado && result.g3.aprovado
             ? "Cenário matematicamente ideal. Faça os dois jogos."
-            : "Apenas um cartão passou nos filtros. Jogue com cautela."}
+            : "Apenas um cartão passou nos filtros."}
         </p>
       </div>
 
