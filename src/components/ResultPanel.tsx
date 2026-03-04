@@ -43,10 +43,12 @@ interface ResultPanelProps {
 
 const GameCard = ({
   label,
+  tag,
   game,
   delay,
 }: {
   label: string;
+  tag: string;
   game: GameResult;
   delay: string;
 }) => (
@@ -54,6 +56,7 @@ const GameCard = ({
     <div className="flex items-center justify-between mb-3">
       <h3 className="font-display text-xs tracking-widest text-neon-cyan uppercase">{label}</h3>
       <div className="flex gap-3 text-xs text-muted-foreground">
+        <span className="text-[10px] opacity-50">{tag}</span>
         <span className="flex items-center gap-1">
           <TrendingUp className="w-3 h-3" /> {game.attrs.soma}
         </span>
@@ -77,10 +80,12 @@ const GameCard = ({
 
 const RejectedCard = ({
   label,
+  tag,
   motivo,
   delay,
 }: {
   label: string;
+  tag: string;
   motivo: string;
   delay: string;
 }) => (
@@ -91,6 +96,7 @@ const RejectedCard = ({
     <div className="flex items-center gap-2 mb-2">
       <ShieldAlert className="w-4 h-4 text-destructive" />
       <h3 className="font-display text-xs tracking-widest text-destructive uppercase">{label} — Descartado</h3>
+      <span className="text-[10px] opacity-50 ml-auto">{tag}</span>
     </div>
     <p className="text-xs text-muted-foreground">
       <span className="text-warning">→</span> {motivo}
@@ -115,12 +121,14 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
 
   const getShareText = () => {
     let text = "🎯 *SNIPER - Lotofácil*\n\n";
+    let jogoNum = 1;
     if (result.g3.aprovado) {
-      text += `📋 *Cartão 02:*\n${formatNumbers(result.g3.numbers)}\n`;
+      text += `📋 *Jogo ${String(jogoNum).padStart(2, "0")}:* (G3)\n${formatNumbers(result.g3.numbers)}\n`;
       text += `Soma: ${result.g3.attrs.soma} | ${result.g3.attrs.pares}P/${15 - result.g3.attrs.pares}I\n\n`;
+      jogoNum++;
     }
     if (result.g2.aprovado && showG2Card) {
-      text += `📋 *Cartão 01:*\n${formatNumbers(result.g2.numbers)}\n`;
+      text += `📋 *Jogo ${String(jogoNum).padStart(2, "0")}:* (G2)\n${formatNumbers(result.g2.numbers)}\n`;
       text += `Soma: ${result.g2.attrs.soma} | ${result.g2.attrs.pares}P/${15 - result.g2.attrs.pares}I\n\n`;
     }
     if (bothRejected) {
@@ -243,14 +251,14 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
       {/* Game cards */}
       {!bothRejected && (
         <>
-          {/* G3 (Cartão 02) — always shown when approved */}
+          {/* G3 — always Jogo 01 (first shown) */}
           {result.g3.aprovado ? (
-            <GameCard label="Cartão 02" game={result.g3} delay="200ms" />
+            <GameCard label="Jogo 01" tag="G3" game={result.g3} delay="200ms" />
           ) : (
-            <RejectedCard label="Cartão 02" motivo={result.g3.motivo} delay="200ms" />
+            <RejectedCard label="Jogo 01" tag="G3" motivo={result.g3.motivo} delay="200ms" />
           )}
 
-          {/* G2 (Cartão 01) — locked behind ad when both approved */}
+          {/* G2 — Jogo 02 (locked behind ad when both approved) */}
           {bothApproved && !g2Unlocked ? (
             <div
               className="neon-card rounded-xl p-5 animate-fade-in-up border-primary/20 text-center"
@@ -259,11 +267,11 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
               <div className="flex items-center justify-center gap-2 mb-3">
                 <Lock className="w-5 h-5 text-primary" />
                 <h3 className="font-display text-xs tracking-widest text-primary uppercase">
-                  Cartão 01 — Bloqueado
+                  Jogo 02 — Bloqueado
                 </h3>
               </div>
               <p className="text-xs text-muted-foreground mb-4">
-                Assista a um anúncio para desbloquear o segundo cartão aprovado.
+                Assista a um anúncio para desbloquear o segundo jogo aprovado.
               </p>
 
               {adError && (
@@ -284,14 +292,14 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
                   className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-primary text-primary-foreground neon-border hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   <Play className="w-4 h-4" />
-                  Desbloquear Cartão 01
+                  Desbloquear Jogo 02
                 </button>
               )}
             </div>
           ) : result.g2.aprovado ? (
-            <GameCard label="Cartão 01" game={result.g2} delay="300ms" />
+            <GameCard label={bothApproved ? "Jogo 02" : "Jogo 01"} tag="G2" game={result.g2} delay="300ms" />
           ) : (
-            <RejectedCard label="Cartão 01" motivo={result.g2.motivo} delay="300ms" />
+            <RejectedCard label={result.g3.aprovado ? "Jogo 02" : "Jogo 01"} tag="G2" motivo={result.g2.motivo} delay="300ms" />
           )}
 
           {/* Copy button */}
