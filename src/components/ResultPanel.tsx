@@ -11,7 +11,12 @@ import {
   Crosshair,
   Ban,
   Telescope,
+  Lock,
+  Play,
+  Timer,
+  AlertCircle,
 } from "lucide-react";
+import { AdMob, RewardAdOptions, AdMobRewardItem } from "@capacitor-community/admob";
 
 const SAFETY_MESSAGES = [
   {
@@ -98,18 +103,25 @@ const formatNumbers = (numbers: number[]) =>
 
 const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
   const [copied, setCopied] = useState(false);
+  const [g2Unlocked, setG2Unlocked] = useState(false);
+  const [adPhase, setAdPhase] = useState<"idle" | "loading" | "done">("idle");
+  const [adError, setAdError] = useState<string | null>(null);
+
   const anyApproved = result.g2.aprovado || result.g3.aprovado;
+  const bothApproved = result.g2.aprovado && result.g3.aprovado;
   const bothRejected = !result.g2.aprovado && !result.g3.aprovado;
+
+  const showG2Card = !bothApproved || g2Unlocked;
 
   const getShareText = () => {
     let text = "🎯 *SNIPER - Lotofácil*\n\n";
-    if (result.g2.aprovado) {
-      text += `📋 *Cartão 01:*\n${formatNumbers(result.g2.numbers)}\n`;
-      text += `Soma: ${result.g2.attrs.soma} | ${result.g2.attrs.pares}P/${15 - result.g2.attrs.pares}I\n\n`;
-    }
     if (result.g3.aprovado) {
       text += `📋 *Cartão 02:*\n${formatNumbers(result.g3.numbers)}\n`;
       text += `Soma: ${result.g3.attrs.soma} | ${result.g3.attrs.pares}P/${15 - result.g3.attrs.pares}I\n\n`;
+    }
+    if (result.g2.aprovado && showG2Card) {
+      text += `📋 *Cartão 01:*\n${formatNumbers(result.g2.numbers)}\n`;
+      text += `Soma: ${result.g2.attrs.soma} | ${result.g2.attrs.pares}P/${15 - result.g2.attrs.pares}I\n\n`;
     }
     if (bothRejected) {
       text += "⛔ Nenhum jogo aprovado para este concurso.";
@@ -139,6 +151,33 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
     }
   };
 
+  const handleUnlockG2 = async () => {
+    setAdPhase("loading");
+    setAdError(null);
+
+    const options: RewardAdOptions = {
+      adId: "ca-app-pub-3947057911901585/7268303549",
+      isTesting: false,
+    };
+
+    try {
+      await AdMob.prepareRewardVideoAd(options);
+      const reward: AdMobRewardItem = await AdMob.showRewardVideoAd();
+
+      if (reward) {
+        setAdPhase("done");
+        setG2Unlocked(true);
+      } else {
+        setAdError("O vídeo não foi concluído. Tente novamente.");
+        setAdPhase("idle");
+      }
+    } catch (err) {
+      console.error("Erro ao carregar o anúncio:", err);
+      setAdError("Não foi possível carregar o anúncio. Tente novamente.");
+      setAdPhase("idle");
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Status */}
@@ -157,7 +196,7 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
           <h2 className="font-display text-lg tracking-wider">
             {bothRejected ? (
               <span className="text-destructive">OPERAÇÃO CANCELADA</span>
-            ) : result.g2.aprovado && result.g3.aprovado ? (
+            ) : bothApproved ? (
               <span className="text-primary neon-text">SINCRONIA TOTAL</span>
             ) : (
               <span className="text-primary neon-text">JOGO PARCIAL</span>
@@ -167,7 +206,7 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
         <p className="text-sm text-muted-foreground">
           {bothRejected
             ? "Filtros de segurança ativados. Economize para o próximo concurso."
-            : result.g2.aprovado && result.g3.aprovado
+            : bothApproved
             ? "Cenário matematicamente ideal. Faça os dois jogos."
             : "Apenas um cartão passou nos filtros."}
         </p>
@@ -201,19 +240,58 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
         </div>
       )}
 
-      {/* Game cards — show approved ones, show rejected info for rejected ones */}
+      {/* Game cards */}
       {!bothRejected && (
         <>
-          {result.g2.aprovado ? (
-            <GameCard label="Cartão 01" game={result.g2} delay="200ms" />
+          {/* G3 (Cartão 02) — always shown when approved */}
+          {result.g3.aprovado ? (
+            <GameCard label="Cartão 02" game={result.g3} delay="200ms" />
           ) : (
-            <RejectedCard label="Cartão 01" motivo={result.g2.motivo} delay="200ms" />
+            <RejectedCard label="Cartão 02" motivo={result.g3.motivo} delay="200ms" />
           )}
 
-          {result.g3.aprovado ? (
-            <GameCard label="Cartão 02" game={result.g3} delay="300ms" />
+          {/* G2 (Cartão 01) — locked behind ad when both approved */}
+          {bothApproved && !g2Unlocked ? (
+            <div
+              className="neon-card rounded-xl p-5 animate-fade-in-up border-primary/20 text-center"
+              style={{ animationDelay: "300ms" }}
+            >
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Lock className="w-5 h-5 text-primary" />
+                <h3 className="font-display text-xs tracking-widest text-primary uppercase">
+                  Cartão 01 — Bloqueado
+                </h3>
+              </div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Assista a um anúncio para desbloquear o segundo cartão aprovado.
+              </p>
+
+              {adError && (
+                <div className="flex items-center gap-2 text-destructive text-xs mb-3 justify-center">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{adError}</span>
+                </div>
+              )}
+
+              {adPhase === "loading" ? (
+                <div className="flex items-center justify-center gap-2 py-3 text-warning">
+                  <Timer className="w-4 h-4 animate-pulse" />
+                  <span className="font-display text-xs tracking-widest uppercase">Carregando...</span>
+                </div>
+              ) : (
+                <button
+                  onClick={handleUnlockG2}
+                  className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-primary text-primary-foreground neon-border hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                  <Play className="w-4 h-4" />
+                  Desbloquear Cartão 01
+                </button>
+              )}
+            </div>
+          ) : result.g2.aprovado ? (
+            <GameCard label="Cartão 01" game={result.g2} delay="300ms" />
           ) : (
-            <RejectedCard label="Cartão 02" motivo={result.g3.motivo} delay="300ms" />
+            <RejectedCard label="Cartão 01" motivo={result.g2.motivo} delay="300ms" />
           )}
 
           {/* Copy button */}
