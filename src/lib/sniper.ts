@@ -43,6 +43,140 @@ function calcularSequenciaMaxima(jogo: number[]): number {
   return Math.max(maxSeq, atual);
 }
 
+function obterLinhaColuna(dezena: number): [number, number] {
+  const linha = Math.floor((dezena - 1) / 5) + 1;
+  const coluna = ((dezena - 1) % 5) + 1;
+  return [linha, coluna];
+}
+
+function analisarLinhasColunas(jogo: number[]): [Map<number, number[]>, Map<number, number[]>] {
+  const linhas = new Map<number, number[]>();
+  const colunas = new Map<number, number[]>();
+  for (let i = 1; i <= 5; i++) {
+    linhas.set(i, []);
+    colunas.set(i, []);
+  }
+  for (const d of jogo) {
+    const [l, c] = obterLinhaColuna(d);
+    linhas.get(l)!.push(d);
+    colunas.get(c)!.push(d);
+  }
+  return [linhas, colunas];
+}
+
+interface CalibracaoResult {
+  jogo: number[];
+  descarteZero: boolean;
+  motivoZero: string;
+}
+
+function calibrarJogoDinamico(
+  jogoInput: number[],
+  grupoNRemovivel: number[],
+  grupoSReserva: number[]
+): CalibracaoResult {
+  let jogo = [...jogoInput];
+  const gN = [...grupoNRemovivel];
+  const gS = [...grupoSReserva];
+  let descarteZero = false;
+  let motivoZero = "";
+
+  const [lDict, cDict] = analisarLinhasColunas(jogo);
+
+  // 1. Checagem de Zero
+  for (const [k, v] of lDict) {
+    if (v.length === 0) { descarteZero = true; motivoZero = `Linha ${k} vazia`; }
+  }
+  for (const [k, v] of cDict) {
+    if (v.length === 0) { descarteZero = true; motivoZero = `Coluna ${k} vazia`; }
+  }
+
+  if (!descarteZero) {
+    // 2. Calibração de 1 elemento
+    type Agrupamento = [string, number, number[]];
+    const todosAgrupamentos: Agrupamento[] = [
+      ...Array.from(lDict.entries()).map(([k, v]) => ['L', k, v] as Agrupamento),
+      ...Array.from(cDict.entries()).map(([k, v]) => ['C', k, v] as Agrupamento),
+    ];
+    const comUm = todosAgrupamentos.filter(x => x[2].length === 1);
+
+    if (comUm.length > 0) {
+      const maisCheio = [...todosAgrupamentos].sort((a, b) => b[2].length - a[2].length)[0];
+      const alvoVazio = comUm[0];
+      const [tipoVazio, idVazio] = alvoVazio;
+
+      const nDisponivel = maisCheio[2].filter(d => gN.includes(d));
+      if (nDisponivel.length > 0) {
+        const dezRemover = nDisponivel[0];
+        const sDisponivel = gS.filter(d => {
+          const [l, c] = obterLinhaColuna(d);
+          return tipoVazio === 'L' ? l === idVazio : c === idVazio;
+        });
+
+        if (sDisponivel.length > 0) {
+          const dezAdicionar = sDisponivel[0];
+          jogo = jogo.filter(x => x !== dezRemover);
+          const gNIdx = gN.indexOf(dezRemover);
+          if (gNIdx !== -1) gN.splice(gNIdx, 1);
+          jogo.push(dezAdicionar);
+          const gSIdx = gS.indexOf(dezAdicionar);
+          if (gSIdx !== -1) gS.splice(gSIdx, 1);
+          jogo.sort((a, b) => a - b);
+        }
+      }
+    }
+  }
+
+  // 3. Calibração de Paridade (11P/4I ou 4P/11I)
+  const [lDict2, cDict2] = analisarLinhasColunas(jogo);
+  const pares = jogo.filter(x => x % 2 === 0);
+  const impares = jogo.filter(x => x % 2 !== 0);
+
+  if (pares.length === 11 || impares.length === 11) {
+    type Agrupamento = [string, number, number[]];
+    const todosAgrupamentos2: Agrupamento[] = [
+      ...Array.from(lDict2.entries()).map(([k, v]) => ['L', k, v] as Agrupamento),
+      ...Array.from(cDict2.entries()).map(([k, v]) => ['C', k, v] as Agrupamento),
+    ];
+    const maisCheio = [...todosAgrupamentos2].sort((a, b) => b[2].length - a[2].length)[0];
+    const [tipoCheio, idCheio, dezenasCheias] = maisCheio;
+
+    if (pares.length === 11) {
+      const candidatosRemover = dezenasCheias.filter(d => gN.includes(d) && d % 2 === 0);
+      if (candidatosRemover.length > 0) {
+        const dezRemover = candidatosRemover[0];
+        const candidatosAdd = gS.filter(d => {
+          if (d % 2 === 0) return false;
+          const [l, c] = obterLinhaColuna(d);
+          return tipoCheio === 'L' ? l === idCheio : c === idCheio;
+        });
+        if (candidatosAdd.length > 0) {
+          jogo = jogo.filter(x => x !== dezRemover);
+          jogo.push(candidatosAdd[0]);
+          jogo.sort((a, b) => a - b);
+        }
+      }
+    } else if (impares.length === 11) {
+      const candidatosRemover = dezenasCheias.filter(d => gN.includes(d) && d % 2 !== 0);
+      if (candidatosRemover.length > 0) {
+        const dezRemover = candidatosRemover[0];
+        const candidatosAdd = gS.filter(d => {
+          if (d % 2 !== 0) return false;
+          const [l, c] = obterLinhaColuna(d);
+          return tipoCheio === 'L' ? l === idCheio : c === idCheio;
+        });
+        if (candidatosAdd.length > 0) {
+          jogo = jogo.filter(x => x !== dezRemover);
+          jogo.push(candidatosAdd[0]);
+          jogo.sort((a, b) => a - b);
+        }
+      }
+    }
+  }
+
+  return { jogo, descarteZero, motivoZero };
+}
+
 function extrairAtributos(jogo: number[]): GameAttributes {
   return {
     soma: jogo.reduce((a, b) => a + b, 0),
@@ -60,7 +194,7 @@ export function runSniperAlgorithm(ultimo: number[]): SniperResult {
   const allNums = new Set(Array.from({ length: 25 }, (_, i) => i + 1));
   const naoSorteadas = [...allNums].filter((x) => !sorted.includes(x)).sort((a, b) => a - b);
 
-  // === G3 (Posições Fixas) ===
+  // === G3 (Posições Fixas - Sem calibração) ===
   const fixasSG3 = [sorted[0], sorted[5], sorted[12]];
   const fixasNG3 = [naoSorteadas[2], naoSorteadas[8]];
 
@@ -72,7 +206,7 @@ export function runSniperAlgorithm(ultimo: number[]): SniperResult {
 
   const jogo3 = [...new Set([...fixasSG3, ...gS2G3, ...fixasNG3, ...gN1G3])].sort((a, b) => a - b);
 
-  // === G2 (Top 5) ===
+  // === G2 (Top 5 com Calibração Dinâmica) ===
   const topSorteadas = TOP_5.filter((x) => sorted.includes(x));
   const topNaoSorteadas = TOP_5.filter((x) => naoSorteadas.includes(x));
 
@@ -98,8 +232,14 @@ export function runSniperAlgorithm(ultimo: number[]): SniperResult {
 
   const gS1G2 = remAG2.slice(0, 6);
   const gN2G2 = remBG2.slice(4);
+  const grupoS2Reserva = remAG2.slice(6); // Sobra das sorteadas
 
-  const jogo2 = [...new Set([...fixasSG2, ...gS1G2, ...fixasNG2, ...gN2G2])].sort((a, b) => a - b);
+  let jogo2 = [...new Set([...fixasSG2, ...gS1G2, ...fixasNG2, ...gN2G2])].sort((a, b) => a - b);
+
+  // Aplica calibração APENAS no G2
+  const { jogo: jogo2Calibrado, descarteZero: descarteZeroG2, motivoZero: motivoZeroG2 } =
+    calibrarJogoDinamico(jogo2, [...gN2G2], [...grupoS2Reserva]);
+  jogo2 = jogo2Calibrado;
 
   // === Atributos ===
   const attrG2 = extrairAtributos(jogo2);
@@ -121,11 +261,12 @@ export function runSniperAlgorithm(ultimo: number[]): SniperResult {
   else if (attrG3.mult3 > 7) { jogarG3 = false; motivoG3 = `Múltiplos de 3 (${attrG3.mult3}) > 7`; }
   else if (attrG3.seqMax > 10) { jogarG3 = false; motivoG3 = `Sequência Máxima (${attrG3.seqMax}) > 10`; }
 
-  // === Filtros G2 ===
+  // === Filtros G2 (com descarte de geometria zero) ===
   let jogarG2 = true;
   let motivoG2 = "";
 
-  if (attrG2.soma > 204) { jogarG2 = false; motivoG2 = `Soma (${attrG2.soma}) > 204`; }
+  if (descarteZeroG2) { jogarG2 = false; motivoG2 = motivoZeroG2; }
+  else if (attrG2.soma > 204) { jogarG2 = false; motivoG2 = `Soma (${attrG2.soma}) > 204`; }
   else if (attrG2.pares === 3 || attrG2.pares === 12) { jogarG2 = false; motivoG2 = `Paridade Extrema (${attrG2.pares}P/${15 - attrG2.pares}I)`; }
   else if (diffSoma > 4) { jogarG2 = false; motivoG2 = `Diferença Soma G2-G3 (${diffSoma}) > 4`; }
   else if (diffSoma < -64) { jogarG2 = false; motivoG2 = `Diferença Soma G2-G3 (${diffSoma}) < -64`; }
