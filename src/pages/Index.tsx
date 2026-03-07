@@ -7,13 +7,15 @@ import AdGate from "@/components/AdGate";
 import { runSniperAlgorithm, SniperResult } from "@/lib/sniper";
 import { fetchLatestResult } from "@/lib/lotofacil-api";
 
-/** Verifica se o horário atual (Brasília, UTC-3) está entre 20:00 e 23:59 */
+/** Verifica se o horário atual (Brasília, UTC-3) está entre 20:00 e 22:00 */
 function isBlockedTime(): boolean {
   const now = new Date();
   // Brasília = UTC-3
   const utcHours = now.getUTCHours();
+  const utcMinutes = now.getUTCMinutes();
   const brasiliaHour = (utcHours - 3 + 24) % 24;
-  return brasiliaHour >= 20 && brasiliaHour <= 23;
+  // Bloqueia das 20:00 até 21:59 (antes das 22:00)
+  return brasiliaHour >= 20 && (brasiliaHour < 22);
 }
 
 const Index = () => {
