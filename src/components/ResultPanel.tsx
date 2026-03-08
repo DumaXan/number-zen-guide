@@ -324,7 +324,7 @@ const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus }: ResultPanelProps
         className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-muted text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] animate-fade-in-up"
         style={{ animationDelay: "400ms" }}
       >
-        Nova Análise
+        Retornar à Página Inicial
       </button>
     </div>
   );
