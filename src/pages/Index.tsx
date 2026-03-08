@@ -57,6 +57,7 @@ const Index = () => {
   const handleManualSubmit = (numbers: number[]) => {
     setMode("manual");
     setResult(runSniperAlgorithm(numbers, historicoNumbers));
+    setIntroHidden(true);
   };
 
   const handleReset = () => {

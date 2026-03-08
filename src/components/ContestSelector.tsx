@@ -83,16 +83,20 @@ const ContestSelector = ({ onSubmit }: ContestSelectorProps) => {
             <button
               key={c.concurso}
               onClick={() => setSelectedConcurso(c.concurso)}
-              className={`w-full text-left px-3 py-2.5 text-sm font-display tracking-wider transition-colors border-b border-border/30 last:border-b-0 ${
+              className={`w-full text-left px-3 py-2.5 transition-colors border-b border-border/30 last:border-b-0 ${
                 selectedConcurso === c.concurso
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               }`}
             >
-              <span className="font-bold">#{c.concurso}</span>
-              <span className="ml-2 text-xs opacity-70">
-                {c.dezenas.map((n) => String(n).padStart(2, "0")).join(" ")}
-              </span>
+              <span className="font-display text-sm font-bold tracking-wider">#{c.concurso}</span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {c.dezenas.map((n) => (
+                  <span key={n} className="text-[10px] opacity-60 font-display">
+                    {String(n).padStart(2, "0")}
+                  </span>
+                ))}
+              </div>
             </button>
           ))
         )}
