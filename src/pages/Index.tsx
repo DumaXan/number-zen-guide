@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp, Clock } from "lucide-react";
+import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp, Clock, HelpCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import ContestSelector from "@/components/ContestSelector";
 import ResultPanel from "@/components/ResultPanel";
@@ -17,6 +18,7 @@ function isBlockedTime(): boolean {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
   const [result, setResult] = useState<SniperResult | null>(null);
   const [adCompleted, setAdCompleted] = useState(false);
   const [showManual, setShowManual] = useState(false);
@@ -212,8 +214,19 @@ const Index = () => {
           </div>
         )}
 
+        {/* Como Jogar */}
+        <div className="mt-6">
+          <button
+            onClick={() => navigate("/como-jogar")}
+            className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+            Como Jogar
+          </button>
+        </div>
+
         {/* Privacy & Terms */}
-        <div className="mt-8 text-center">
+        <div className="mt-4 text-center">
           <a
             href="https://sites.google.com/view/privacysniperlotofacil"
             target="_blank"
