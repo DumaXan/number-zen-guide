@@ -152,10 +152,11 @@ const Index = () => {
               {latest.dezenas.map((n) => (
                 <div
                   key={n}
-                  className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-[13px] font-bold text-primary"
-                  style={{ lineHeight: 1, transform: "scaleY(1.35)" }}
+                  className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display font-bold text-primary overflow-hidden"
                 >
-                  {String(n).padStart(2, "0")}
+                  <span style={{ fontSize: "13px", lineHeight: 1, transform: "scaleY(1.4)", display: "inline-block" }}>
+                    {String(n).padStart(2, "0")}
+                  </span>
                 </div>
               ))}
             </div>
