@@ -225,7 +225,7 @@ const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus }: ResultPanelProps
       )}
 
       {/* Both rejected: safety message */}
-      {bothRejected && (
+      {bothRejected && !hideStatus && (
         <div
           className="neon-card rounded-xl p-6 animate-fade-in-up border-warning/20"
           style={{ animationDelay: "100ms" }}
