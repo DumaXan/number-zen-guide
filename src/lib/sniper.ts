@@ -189,7 +189,7 @@ function extrairAtributos(jogo: number[]): GameAttributes {
   };
 }
 
-export function runSniperAlgorithm(ultimo: number[]): SniperResult {
+export function runSniperAlgorithm(ultimo: number[], historicalResults?: number[][]): SniperResult {
   const sorted = [...ultimo].sort((a, b) => a - b);
   const allNums = new Set(Array.from({ length: 25 }, (_, i) => i + 1));
   const naoSorteadas = [...allNums].filter((x) => !sorted.includes(x)).sort((a, b) => a - b);
