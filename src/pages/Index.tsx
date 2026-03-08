@@ -18,6 +18,7 @@ function isBlockedTime(): boolean {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
   const [result, setResult] = useState<SniperResult | null>(null);
   const [adCompleted, setAdCompleted] = useState(false);
   const [showManual, setShowManual] = useState(false);
