@@ -43,8 +43,8 @@ const AdGate = ({ onComplete }: AdGateProps) => {
         <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
           <Play className="w-7 h-7 text-primary" />
         </div>
-        <h3 className="font-display text-sm tracking-widest text-primary uppercase mb-2">
-          Jogo do Dia Pronto
+        <h3 className="font-display text-lg tracking-widest text-primary uppercase mb-2 neon-text">
+          🎯 Jogo do Dia Pronto
         </h3>
         <p className="text-sm text-muted-foreground mb-5">
           Assista a um breve anúncio para liberar seus cartões gerados pelo Protocolo Sniper.
