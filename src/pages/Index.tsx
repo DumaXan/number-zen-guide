@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
 import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import NumberInputGrid from "@/components/NumberInputGrid";
+import ContestSelector from "@/components/ContestSelector";
 import ResultPanel from "@/components/ResultPanel";
 import AdGate from "@/components/AdGate";
 import { runSniperAlgorithm, SniperResult } from "@/lib/sniper";
 import { fetchLatestResult } from "@/lib/lotofacil-api";
+import { getAllContests, addNewContest, ConcursoHistorico } from "@/lib/historico-service";
 
 /** Verifica se o horário atual (Brasília, UTC-3) está entre 20:00 e 22:00 */
 function isBlockedTime(): boolean {
   const now = new Date();
-  // Brasília = UTC-3
   const utcHours = now.getUTCHours();
-  const utcMinutes = now.getUTCMinutes();
   const brasiliaHour = (utcHours - 3 + 24) % 24;
-  // Bloqueia das 20:00 até 21:59 (antes das 22:00)
-  return brasiliaHour >= 20 && (brasiliaHour < 22);
+  return brasiliaHour >= 20 && brasiliaHour < 22;
 }
 
 const Index = () => {
@@ -24,8 +22,14 @@ const Index = () => {
   const [showManual, setShowManual] = useState(false);
   const [mode, setMode] = useState<"auto" | "manual">("auto");
   const [blocked, setBlocked] = useState(isBlockedTime());
+  const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
 
-  // Reavalia a cada minuto
+  // Load historical data
+  useEffect(() => {
+    getAllContests().then(setHistorico).catch(() => {});
+  }, []);
+
+  // Re-check blocked time every minute
   useEffect(() => {
     const interval = setInterval(() => setBlocked(isBlockedTime()), 60_000);
     return () => clearInterval(interval);
@@ -34,14 +38,24 @@ const Index = () => {
   const { data: latest, isLoading, error } = useQuery({
     queryKey: ["lotofacil-latest"],
     queryFn: fetchLatestResult,
-    staleTime: 1000 * 60 * 30, // 30 min
+    staleTime: 1000 * 60 * 30,
   });
 
-  const autoResult = latest ? runSniperAlgorithm(latest.dezenas) : null;
+  // When latest is fetched, add to local historical DB and refresh
+  useEffect(() => {
+    if (latest) {
+      addNewContest(latest.concurso, latest.dezenas);
+      getAllContests().then(setHistorico).catch(() => {});
+    }
+  }, [latest]);
+
+  const historicoNumbers = historico.map((c) => c.dezenas);
+
+  const autoResult = latest ? runSniperAlgorithm(latest.dezenas, historicoNumbers) : null;
 
   const handleManualSubmit = (numbers: number[]) => {
     setMode("manual");
-    setResult(runSniperAlgorithm(numbers));
+    setResult(runSniperAlgorithm(numbers, historicoNumbers));
   };
 
   const handleReset = () => {
@@ -182,7 +196,7 @@ const Index = () => {
             </button>
             {showManual && (
               <div className="mt-4 animate-fade-in-up">
-                <NumberInputGrid onSubmit={handleManualSubmit} />
+                <ContestSelector onSubmit={handleManualSubmit} />
               </div>
             )}
           </div>
