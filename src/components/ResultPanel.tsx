@@ -39,6 +39,7 @@ const SAFETY_MESSAGES = [
 interface ResultPanelProps {
   result: SniperResult;
   onReset: () => void;
+  hideG2Ad?: boolean;
 }
 
 const GameCard = ({
