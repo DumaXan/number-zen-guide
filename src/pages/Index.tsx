@@ -21,6 +21,7 @@ const Index = () => {
   const [adCompleted, setAdCompleted] = useState(false);
   const [showManual, setShowManual] = useState(false);
   const [mode, setMode] = useState<"auto" | "manual">("auto");
+  const [introHidden, setIntroHidden] = useState(false);
   const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
 
