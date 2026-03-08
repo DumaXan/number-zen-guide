@@ -47,7 +47,7 @@ const AdGate = ({ onComplete }: AdGateProps) => {
           Jogo do Dia Pronto
         </h3>
         <p className="text-sm text-muted-foreground mb-5">
-          Assista a um breve anúncio para liberar seus cartões gerados pelo Protocolo Sniper.
+          Assista a um breve anúncio para liberar seus jogos gerados pelo Protocolo Sniper.
         </p>
         {error && (
           <div className="flex items-center gap-2 text-destructive text-sm mb-4 justify-center">
