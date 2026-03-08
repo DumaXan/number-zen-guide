@@ -198,8 +198,8 @@ const Index = () => {
           <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus />
         )}
 
-        {/* Manual simulation toggle - hidden during blocked time */}
-        {!result && !blocked && (
+        {/* Manual simulation toggle - hidden during blocked time and when auto results shown */}
+        {!result && !blocked && !adCompleted && (
           <div className="mt-6">
             <button
               onClick={() => setShowManual(!showManual)}
@@ -216,16 +216,18 @@ const Index = () => {
           </div>
         )}
 
-        {/* Como Jogar */}
-        <div className="mt-6">
-          <button
-            onClick={() => navigate("/como-jogar")}
-            className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
-          >
-            <HelpCircle className="w-5 h-5" />
-            Como Jogar
-          </button>
-        </div>
+        {/* Como Jogar - hidden when results shown */}
+        {!adCompleted && !result && (
+          <div className="mt-6">
+            <button
+              onClick={() => navigate("/como-jogar")}
+              className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+            >
+              <HelpCircle className="w-5 h-5" />
+              Como Jogar
+            </button>
+          </div>
+        )}
 
         {/* Privacy & Terms */}
         <div className="mt-4 text-center">
