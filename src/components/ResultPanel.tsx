@@ -118,7 +118,7 @@ const ResultPanel = ({ result, onReset, hideG2Ad }: ResultPanelProps) => {
   const bothApproved = result.g2.aprovado && result.g3.aprovado;
   const bothRejected = !result.g2.aprovado && !result.g3.aprovado;
 
-  const showG2Card = !bothApproved || g2Unlocked;
+  const showG2Card = !bothApproved || g2Unlocked || hideG2Ad;
 
   const getShareText = () => {
     let text = "🎯 *SNIPER - Lotofácil*\n\n";
