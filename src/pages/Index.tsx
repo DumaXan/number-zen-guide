@@ -21,6 +21,7 @@ const Index = () => {
   const [adCompleted, setAdCompleted] = useState(false);
   const [showManual, setShowManual] = useState(false);
   const [mode, setMode] = useState<"auto" | "manual">("auto");
+  const [introHidden, setIntroHidden] = useState(false);
   const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
 
@@ -56,6 +57,7 @@ const Index = () => {
   const handleManualSubmit = (numbers: number[]) => {
     setMode("manual");
     setResult(runSniperAlgorithm(numbers, historicoNumbers));
+    setIntroHidden(true);
   };
 
   const handleReset = () => {
@@ -92,14 +94,22 @@ const Index = () => {
         </header>
 
         {/* Intro text */}
-        <div className="neon-card rounded-xl p-4 mb-6 animate-fade-in-up">
-          <p className="text-xs text-muted-foreground leading-relaxed text-justify">
-            Esse aplicativo foi desenvolvido com base nos estudos do Professor <span className="text-primary font-semibold">Eustáquio Salamanca</span>, mestre em estatística que passou os últimos 8 anos estudando padrões nos jogos da Lotofácil para aumentar as chances de ao menos garantir 11, 12, 13 ou mesmo 14 pontos. Em todos os concursos haverá os jogos prontos que devem ser feitos para o próximo. Pode haver dias que será melhor não fazer nenhuma aposta, pois o algoritmo não acha viável segundo as estatísticas.
-          </p>
-          <p className="text-[10px] text-warning mt-2 font-display tracking-wider uppercase">
-            ⚠️ Jogue com responsabilidade.
-          </p>
-        </div>
+        {!introHidden ? (
+          <div className="neon-card rounded-xl p-4 mb-6 animate-fade-in-up">
+            <p className="text-xs text-muted-foreground leading-relaxed text-justify">
+              Esse aplicativo foi desenvolvido com base nos estudos do Professor <span className="text-primary font-semibold">Eustáquio Salamanca</span>, mestre em estatística que passou os últimos 8 anos estudando padrões nos jogos da Lotofácil para aumentar as chances de ao menos garantir 11, 12, 13 ou mesmo 14 pontos. Em todos os concursos haverá os jogos prontos que devem ser feitos para o próximo. Pode haver dias que será melhor não fazer nenhuma aposta, pois o algoritmo não acha viável segundo as estatísticas.
+            </p>
+            <p className="text-[10px] text-warning mt-2 font-display tracking-wider uppercase">
+              ⚠️ Jogue com responsabilidade.
+            </p>
+          </div>
+        ) : (
+          <div className="text-center mb-6 animate-fade-in-up">
+            <p className="text-xs text-warning font-display tracking-widest uppercase">
+              ⚠️ Jogue com responsabilidade
+            </p>
+          </div>
+        )}
 
         {/* Loading */}
         {isLoading && (
@@ -136,11 +146,11 @@ const Index = () => {
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-5 gap-1.5">
+            <div className="flex flex-wrap gap-1.5 justify-center">
               {latest.dezenas.map((n) => (
                 <div
                   key={n}
-                  className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-xl font-bold text-primary"
+                  className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-[11px] font-bold text-primary"
                 >
                   {String(n).padStart(2, "0")}
                 </div>
@@ -170,7 +180,7 @@ const Index = () => {
         {mode === "auto" && latest && !result && !blocked && (
           <>
             {!adCompleted ? (
-              <AdGate onComplete={() => setAdCompleted(true)} />
+              <AdGate onComplete={() => { setAdCompleted(true); setIntroHidden(true); }} />
             ) : (
               <div className="animate-fade-in-up">
                 <ResultPanel result={autoResult!} onReset={handleReset} />
