@@ -145,11 +145,11 @@ const Index = () => {
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-5 gap-1.5">
+            <div className="flex flex-wrap gap-1.5 justify-center">
               {latest.dezenas.map((n) => (
                 <div
                   key={n}
-                  className="aspect-square rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-xl font-bold text-primary"
+                  className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-[11px] font-bold text-primary"
                 >
                   {String(n).padStart(2, "0")}
                 </div>
