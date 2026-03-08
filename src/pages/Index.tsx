@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp, Clock } from "lucide-react";
+import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp, Clock, HelpCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import ContestSelector from "@/components/ContestSelector";
 import ResultPanel from "@/components/ResultPanel";
