@@ -57,8 +57,9 @@ const Index = () => {
 
   const autoResult = latest ? runSniperAlgorithm(latest.dezenas, historicoNumbers) : null;
 
-  const handleManualSubmit = (numbers: number[]) => {
+  const handleManualSubmit = (numbers: number[], concurso: number) => {
     setMode("manual");
+    setManualConcurso(concurso);
     setResult(runSniperAlgorithm(numbers, historicoNumbers));
     setIntroHidden(true);
   };
