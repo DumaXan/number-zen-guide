@@ -153,6 +153,7 @@ const Index = () => {
                 <div
                   key={n}
                   className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-[13px] font-bold text-primary"
+                  style={{ lineHeight: 1, transform: "scaleY(1.35)" }}
                 >
                   {String(n).padStart(2, "0")}
                 </div>
