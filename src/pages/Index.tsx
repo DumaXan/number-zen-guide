@@ -69,6 +69,7 @@ const Index = () => {
     setAdCompleted(false);
     setMode("auto");
     setShowManual(false);
+    setIntroHidden(false);
   };
 
   return (
