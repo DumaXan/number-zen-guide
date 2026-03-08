@@ -26,6 +26,7 @@ const Index = () => {
   const [introHidden, setIntroHidden] = useState(false);
   const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
+  const [manualConcurso, setManualConcurso] = useState<number | null>(null);
 
   // Load historical data
   useEffect(() => {
