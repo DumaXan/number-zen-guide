@@ -214,8 +214,19 @@ const Index = () => {
           </div>
         )}
 
+        {/* Como Jogar */}
+        <div className="mt-6">
+          <button
+            onClick={() => navigate("/como-jogar")}
+            className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+            Como Jogar
+          </button>
+        </div>
+
         {/* Privacy & Terms */}
-        <div className="mt-8 text-center">
+        <div className="mt-4 text-center">
           <a
             href="https://sites.google.com/view/privacysniperlotofacil"
             target="_blank"
