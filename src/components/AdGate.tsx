@@ -39,9 +39,9 @@ const AdGate = ({ onComplete }: AdGateProps) => {
 
   if (phase === "ready") {
     return (
-      <div className="neon-card rounded-xl p-6 text-center animate-fade-in-up">
-        <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
-          <Play className="w-7 h-7 text-primary" />
+      <div className="neon-card rounded-xl p-6 text-center animate-fade-in-up border-primary/40 neon-border">
+        <div className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mx-auto mb-4">
+          <Play className="w-9 h-9 text-primary" />
         </div>
         <h3 className="font-display text-lg tracking-widest text-primary uppercase mb-2 neon-text">
           🎯 Jogo do Dia Pronto
