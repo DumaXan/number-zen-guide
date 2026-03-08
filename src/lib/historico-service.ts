@@ -1,0 +1,75 @@
+import * as XLSX from "xlsx";
+
+export interface ConcursoHistorico {
+  concurso: number;
+  dezenas: number[];
+}
+
+const STORAGE_KEY = "sniper-historico-extra";
+let cachedData: ConcursoHistorico[] | null = null;
+
+/** Loads the base historical data from the Excel file */
+async function loadBaseData(): Promise<ConcursoHistorico[]> {
+  const response = await fetch("/data/lotofacil-historico.xlsx");
+  const buffer = await response.arrayBuffer();
+  const workbook = XLSX.read(buffer, { type: "array" });
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json<{ Concurso: number; Resultado: string }>(sheet);
+
+  return rows.map((row) => ({
+    concurso: row.Concurso,
+    dezenas: row.Resultado.split(" ").map((n) => parseInt(n, 10)).sort((a, b) => a - b),
+  }));
+}
+
+/** Gets extra contests added after the base Excel (stored in localStorage) */
+function getExtraContests(): ConcursoHistorico[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Saves a new contest to localStorage if it doesn't exist yet */
+function saveExtraContest(contest: ConcursoHistorico): void {
+  const extras = getExtraContests();
+  if (extras.some((c) => c.concurso === contest.concurso)) return;
+  extras.push(contest);
+  extras.sort((a, b) => a.concurso - b.concurso);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(extras));
+}
+
+/** Returns all historical contests (base + extras), sorted by concurso */
+export async function getAllContests(): Promise<ConcursoHistorico[]> {
+  if (!cachedData) {
+    const base = await loadBaseData();
+    cachedData = base;
+  }
+
+  const extras = getExtraContests();
+  // Merge: add extras that aren't in base
+  const baseIds = new Set(cachedData.map((c) => c.concurso));
+  const merged = [...cachedData];
+  for (const e of extras) {
+    if (!baseIds.has(e.concurso)) {
+      merged.push(e);
+    }
+  }
+  merged.sort((a, b) => a.concurso - b.concurso);
+  return merged;
+}
+
+/** Add a new contest from the API result to the local store */
+export function addNewContest(concurso: number, dezenas: number[]): void {
+  saveExtraContest({ concurso, dezenas: [...dezenas].sort((a, b) => a - b) });
+  // Invalidate cache so next getAllContests picks it up
+  cachedData = null;
+}
+
+/** Check if a set of 15 numbers matches any historical result */
+export function isHistoricalMatch(numbers: number[], allContests: ConcursoHistorico[]): boolean {
+  const key = [...numbers].sort((a, b) => a - b).join(",");
+  return allContests.some((c) => c.dezenas.join(",") === key);
+}
