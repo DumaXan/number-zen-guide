@@ -26,6 +26,7 @@ const Index = () => {
   const [introHidden, setIntroHidden] = useState(false);
   const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
+  const [manualConcurso, setManualConcurso] = useState<number | null>(null);
 
   // Load historical data
   useEffect(() => {
@@ -56,8 +57,9 @@ const Index = () => {
 
   const autoResult = latest ? runSniperAlgorithm(latest.dezenas, historicoNumbers) : null;
 
-  const handleManualSubmit = (numbers: number[]) => {
+  const handleManualSubmit = (numbers: number[], concurso: number) => {
     setMode("manual");
+    setManualConcurso(concurso);
     setResult(runSniperAlgorithm(numbers, historicoNumbers));
     setIntroHidden(true);
   };
@@ -195,7 +197,7 @@ const Index = () => {
 
         {/* Manual mode result */}
         {mode === "manual" && result && (
-          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus />
+          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus contestNumber={manualConcurso ?? undefined} />
         )}
 
         {/* Manual simulation toggle - hidden during blocked time and when auto results shown */}
