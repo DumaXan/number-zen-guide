@@ -179,7 +179,7 @@ const Index = () => {
         {mode === "auto" && latest && !result && !blocked && (
           <>
             {!adCompleted ? (
-              <AdGate onComplete={() => setAdCompleted(true)} />
+              <AdGate onComplete={() => { setAdCompleted(true); setIntroHidden(true); }} />
             ) : (
               <div className="animate-fade-in-up">
                 <ResultPanel result={autoResult!} onReset={handleReset} />
