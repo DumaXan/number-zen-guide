@@ -109,7 +109,7 @@ const RejectedCard = ({
 const formatNumbers = (numbers: number[]) =>
   numbers.map((n) => String(n).padStart(2, "0")).join(" - ");
 
-const ResultPanel = ({ result, onReset, hideG2Ad }: ResultPanelProps) => {
+const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus }: ResultPanelProps) => {
   const [copied, setCopied] = useState(false);
   const [g2Unlocked, setG2Unlocked] = useState(false);
   const [adPhase, setAdPhase] = useState<"idle" | "loading" | "done">("idle");
