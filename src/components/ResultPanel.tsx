@@ -40,6 +40,7 @@ interface ResultPanelProps {
   result: SniperResult;
   onReset: () => void;
   hideG2Ad?: boolean;
+  hideStatus?: boolean;
 }
 
 const GameCard = ({
