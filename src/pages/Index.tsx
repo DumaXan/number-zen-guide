@@ -197,7 +197,7 @@ const Index = () => {
 
         {/* Manual mode result */}
         {mode === "manual" && result && (
-          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus />
+          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus contestNumber={manualConcurso ?? undefined} />
         )}
 
         {/* Manual simulation toggle - hidden during blocked time and when auto results shown */}

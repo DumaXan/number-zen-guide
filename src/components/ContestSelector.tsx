@@ -38,7 +38,7 @@ const ContestSelector = ({ onSubmit }: ContestSelectorProps) => {
 
   const handleSubmit = () => {
     if (selectedContest) {
-      onSubmit(selectedContest.dezenas);
+      onSubmit(selectedContest.dezenas, selectedContest.concurso);
     }
   };
 

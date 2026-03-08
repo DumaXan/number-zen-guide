@@ -189,8 +189,35 @@ const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus, contestNumber }: R
     }
   };
 
+  const contestLabel = contestNumber ? `#${contestNumber}` : "";
+
+  const getSimulationMessage = () => {
+    if (!contestNumber) return null;
+    if (bothRejected) {
+      return `A estratégia não achou viável realizar apostas para o concurso ${contestLabel}.`;
+    }
+    if (bothApproved) {
+      return `Estes foram os jogos que foram gerados pela estratégia do Professor Eustáquio Salamanca para o concurso ${contestLabel}.`;
+    }
+    return `Este foi o jogo gerado pela estratégia do Professor Eustáquio Salamanca para o concurso ${contestLabel}.`;
+  };
+
+  const simulationMessage = getSimulationMessage();
+
   return (
     <div className="space-y-4">
+      {/* Simulation context message */}
+      {simulationMessage && (
+        <div
+          className="neon-card rounded-xl p-4 animate-fade-in-up text-center"
+          style={{ animationDelay: "0ms" }}
+        >
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {simulationMessage}
+          </p>
+        </div>
+      )}
+
       {/* Status */}
       {!hideStatus && (
         <div
