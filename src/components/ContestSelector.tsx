@@ -3,7 +3,7 @@ import { Crosshair, Search, ChevronDown } from "lucide-react";
 import { ConcursoHistorico, getAllContests } from "@/lib/historico-service";
 
 interface ContestSelectorProps {
-  onSubmit: (numbers: number[]) => void;
+  onSubmit: (numbers: number[], concurso: number) => void;
 }
 
 const ContestSelector = ({ onSubmit }: ContestSelectorProps) => {
