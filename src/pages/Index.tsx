@@ -191,7 +191,7 @@ const Index = () => {
 
         {/* Manual mode result */}
         {mode === "manual" && result && (
-          <ResultPanel result={result} onReset={handleReset} hideG2Ad />
+          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus />
         )}
 
         {/* Manual simulation toggle - hidden during blocked time */}

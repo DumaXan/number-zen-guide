@@ -191,36 +191,38 @@ const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus }: ResultPanelProps
   return (
     <div className="space-y-4">
       {/* Status */}
-      <div
-        className={`neon-card rounded-xl p-5 text-center animate-fade-in-up ${
-          bothRejected ? "border-destructive/30" : ""
-        }`}
-        style={{ animationDelay: "0ms" }}
-      >
-        <div className="flex items-center justify-center gap-2 mb-2">
-          {anyApproved ? (
-            <Rocket className="w-6 h-6 text-primary animate-pulse-neon" />
-          ) : (
-            <ShieldAlert className="w-6 h-6 text-destructive" />
-          )}
-          <h2 className="font-display text-lg tracking-wider">
-            {bothRejected ? (
-              <span className="text-destructive">OPERAÇÃO CANCELADA</span>
-            ) : bothApproved ? (
-              <span className="text-primary neon-text">SINCRONIA TOTAL</span>
+      {!hideStatus && (
+        <div
+          className={`neon-card rounded-xl p-5 text-center animate-fade-in-up ${
+            bothRejected ? "border-destructive/30" : ""
+          }`}
+          style={{ animationDelay: "0ms" }}
+        >
+          <div className="flex items-center justify-center gap-2 mb-2">
+            {anyApproved ? (
+              <Rocket className="w-6 h-6 text-primary animate-pulse-neon" />
             ) : (
-              <span className="text-primary neon-text">JOGO PARCIAL</span>
+              <ShieldAlert className="w-6 h-6 text-destructive" />
             )}
-          </h2>
+            <h2 className="font-display text-lg tracking-wider">
+              {bothRejected ? (
+                <span className="text-destructive">OPERAÇÃO CANCELADA</span>
+              ) : bothApproved ? (
+                <span className="text-primary neon-text">SINCRONIA TOTAL</span>
+              ) : (
+                <span className="text-primary neon-text">JOGO PARCIAL</span>
+              )}
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {bothRejected
+              ? "Filtros de segurança ativados. Economize para o próximo concurso."
+              : bothApproved
+              ? "Cenário matematicamente ideal. Faça os dois jogos."
+              : "Apenas um cartão passou nos filtros."}
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          {bothRejected
-            ? "Filtros de segurança ativados. Economize para o próximo concurso."
-            : bothApproved
-            ? "Cenário matematicamente ideal. Faça os dois jogos."
-            : "Apenas um cartão passou nos filtros."}
-        </p>
-      </div>
+      )}
 
       {/* Both rejected: safety message */}
       {bothRejected && (
