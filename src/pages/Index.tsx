@@ -222,7 +222,7 @@ const Index = () => {
             onClick={() => navigate("/como-jogar")}
             className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
           >
-            <HelpCircle className="w-3.5 h-3.5" />
+            <HelpCircle className="w-5 h-5" />
             Como Jogar
           </button>
         </div>
