@@ -260,7 +260,7 @@ const ResultPanel = ({ result, onReset, hideG2Ad }: ResultPanelProps) => {
           )}
 
           {/* G2 — Jogo 02 (locked behind ad when both approved) */}
-          {bothApproved && !g2Unlocked ? (
+          {bothApproved && !g2Unlocked && !hideG2Ad ? (
             <div
               className="neon-card rounded-xl p-5 animate-fade-in-up border-primary/20 text-center"
               style={{ animationDelay: "300ms" }}
