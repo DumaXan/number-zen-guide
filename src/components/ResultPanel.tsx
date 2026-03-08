@@ -39,6 +39,7 @@ const SAFETY_MESSAGES = [
 interface ResultPanelProps {
   result: SniperResult;
   onReset: () => void;
+  hideG2Ad?: boolean;
 }
 
 const GameCard = ({
@@ -107,7 +108,7 @@ const RejectedCard = ({
 const formatNumbers = (numbers: number[]) =>
   numbers.map((n) => String(n).padStart(2, "0")).join(" - ");
 
-const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
+const ResultPanel = ({ result, onReset, hideG2Ad }: ResultPanelProps) => {
   const [copied, setCopied] = useState(false);
   const [g2Unlocked, setG2Unlocked] = useState(false);
   const [adPhase, setAdPhase] = useState<"idle" | "loading" | "done">("idle");
@@ -117,7 +118,7 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
   const bothApproved = result.g2.aprovado && result.g3.aprovado;
   const bothRejected = !result.g2.aprovado && !result.g3.aprovado;
 
-  const showG2Card = !bothApproved || g2Unlocked;
+  const showG2Card = !bothApproved || g2Unlocked || hideG2Ad;
 
   const getShareText = () => {
     let text = "🎯 *SNIPER - Lotofácil*\n\n";
@@ -259,7 +260,7 @@ const ResultPanel = ({ result, onReset }: ResultPanelProps) => {
           )}
 
           {/* G2 — Jogo 02 (locked behind ad when both approved) */}
-          {bothApproved && !g2Unlocked ? (
+          {bothApproved && !g2Unlocked && !hideG2Ad ? (
             <div
               className="neon-card rounded-xl p-5 animate-fade-in-up border-primary/20 text-center"
               style={{ animationDelay: "300ms" }}

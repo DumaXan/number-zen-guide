@@ -150,7 +150,7 @@ const Index = () => {
               {latest.dezenas.map((n) => (
                 <div
                   key={n}
-                  className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-[11px] font-bold text-primary"
+                  className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display text-[13px] font-bold text-primary"
                 >
                   {String(n).padStart(2, "0")}
                 </div>
@@ -191,7 +191,7 @@ const Index = () => {
 
         {/* Manual mode result */}
         {mode === "manual" && result && (
-          <ResultPanel result={result} onReset={handleReset} />
+          <ResultPanel result={result} onReset={handleReset} hideG2Ad />
         )}
 
         {/* Manual simulation toggle - hidden during blocked time */}
