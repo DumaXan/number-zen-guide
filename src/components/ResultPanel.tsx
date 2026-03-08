@@ -41,6 +41,7 @@ interface ResultPanelProps {
   onReset: () => void;
   hideG2Ad?: boolean;
   hideStatus?: boolean;
+  contestNumber?: number;
 }
 
 const GameCard = ({
