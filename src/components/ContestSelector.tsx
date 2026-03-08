@@ -22,10 +22,11 @@ const ContestSelector = ({ onSubmit }: ContestSelectorProps) => {
   }, []);
 
   // Descending order
-  const sortedContests = useMemo(
-    () => [...contests].sort((a, b) => b.concurso - a.concurso),
-    [contests]
-  );
+  const sortedContests = useMemo(() => {
+    const sorted = [...contests].sort((a, b) => b.concurso - a.concurso);
+    // Remove the 2 most recent contests
+    return sorted.slice(2);
+  }, [contests]);
 
   const filteredContests = useMemo(() => {
     if (!searchTerm) return sortedContests;
