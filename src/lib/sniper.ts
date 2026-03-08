@@ -189,7 +189,7 @@ function extrairAtributos(jogo: number[]): GameAttributes {
   };
 }
 
-export function runSniperAlgorithm(ultimo: number[]): SniperResult {
+export function runSniperAlgorithm(ultimo: number[], historicalResults?: number[][]): SniperResult {
   const sorted = [...ultimo].sort((a, b) => a - b);
   const allNums = new Set(Array.from({ length: 25 }, (_, i) => i + 1));
   const naoSorteadas = [...allNums].filter((x) => !sorted.includes(x)).sort((a, b) => a - b);
@@ -275,6 +275,23 @@ export function runSniperAlgorithm(ultimo: number[]): SniperResult {
   else if (attrG2.fibo < 3 || attrG2.fibo > 6) { jogarG2 = false; motivoG2 = `Fibonacci (${attrG2.fibo}) fora do ideal [3-6]`; }
   else if (attrG2.mult3 > 7) { jogarG2 = false; motivoG2 = `Múltiplos de 3 (${attrG2.mult3}) > 7`; }
   else if (attrG2.seqMax > 9) { jogarG2 = false; motivoG2 = `Sequência Máxima (${attrG2.seqMax}) > 9`; }
+
+  // === Filtro de Duplicata Histórica ===
+  if (historicalResults && historicalResults.length > 0) {
+    const key2 = jogo2.join(",");
+    const key3 = jogo3.join(",");
+    for (const hist of historicalResults) {
+      const hKey = [...hist].sort((a, b) => a - b).join(",");
+      if (jogarG2 && key2 === hKey) {
+        jogarG2 = false;
+        motivoG2 = "Jogo idêntico a resultado passado (duplicata histórica)";
+      }
+      if (jogarG3 && key3 === hKey) {
+        jogarG3 = false;
+        motivoG3 = "Jogo idêntico a resultado passado (duplicata histórica)";
+      }
+    }
+  }
 
   return {
     g2: { numbers: jogo2, attrs: attrG2, aprovado: jogarG2, motivo: motivoG2 },
