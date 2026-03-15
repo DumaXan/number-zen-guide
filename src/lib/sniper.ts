@@ -253,7 +253,7 @@ export function runSniperAlgorithm(ultimo: number[], historicalResults?: number[
   if (attrG3.soma > 215) { jogarG3 = false; motivoG3 = `Soma (${attrG3.soma}) > 215`; }
   else if (attrG3.soma < 192) { jogarG3 = false; motivoG3 = `Soma (${attrG3.soma}) < 192`; }
   else if (attrG3.pares === 3 || attrG3.pares === 12) { jogarG3 = false; motivoG3 = `Paridade Extrema (${attrG3.pares}P/${15 - attrG3.pares}I)`; }
-  else if (diffSoma > 4) { jogarG3 = false; motivoG3 = `Diferença Soma G2-G3 (${diffSoma}) > 4`; }
+  else if (diffSoma > 7) { jogarG3 = false; motivoG3 = `Diferença Soma G2-G3 (${diffSoma}) > 7`; }
   else if (diffSoma < -45) { jogarG3 = false; motivoG3 = `Diferença Soma G2-G3 (${diffSoma}) < -45`; }
   else if (attrG3.moldura > 13) { jogarG3 = false; motivoG3 = `Moldura (${attrG3.moldura}) > 13`; }
   else if (attrG3.primos > 7) { jogarG3 = false; motivoG3 = `Primos (${attrG3.primos}) > 7`; }
