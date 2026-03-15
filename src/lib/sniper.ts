@@ -253,10 +253,10 @@ export function runSniperAlgorithm(ultimo: number[], historicalResults?: number[
   if (attrG3.soma > 215) { jogarG3 = false; motivoG3 = `Soma (${attrG3.soma}) > 215`; }
   else if (attrG3.soma < 192) { jogarG3 = false; motivoG3 = `Soma (${attrG3.soma}) < 192`; }
   else if (attrG3.pares === 3 || attrG3.pares === 12) { jogarG3 = false; motivoG3 = `Paridade Extrema (${attrG3.pares}P/${15 - attrG3.pares}I)`; }
-  else if (diffSoma > 4) { jogarG3 = false; motivoG3 = `Diferença Soma G2-G3 (${diffSoma}) > 4`; }
+  else if (diffSoma > 7) { jogarG3 = false; motivoG3 = `Diferença Soma G2-G3 (${diffSoma}) > 7`; }
   else if (diffSoma < -45) { jogarG3 = false; motivoG3 = `Diferença Soma G2-G3 (${diffSoma}) < -45`; }
   else if (attrG3.moldura > 13) { jogarG3 = false; motivoG3 = `Moldura (${attrG3.moldura}) > 13`; }
-  else if (attrG3.primos > 7) { jogarG3 = false; motivoG3 = `Primos (${attrG3.primos}) > 7`; }
+  else if (attrG3.primos > 8) { jogarG3 = false; motivoG3 = `Primos (${attrG3.primos}) > 8`; }
   else if (attrG3.fibo < 3 || attrG3.fibo > 6) { jogarG3 = false; motivoG3 = `Fibonacci (${attrG3.fibo}) fora do ideal [3-6]`; }
   else if (attrG3.mult3 > 7) { jogarG3 = false; motivoG3 = `Múltiplos de 3 (${attrG3.mult3}) > 7`; }
   else if (attrG3.seqMax > 10) { jogarG3 = false; motivoG3 = `Sequência Máxima (${attrG3.seqMax}) > 10`; }
