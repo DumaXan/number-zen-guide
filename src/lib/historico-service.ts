@@ -8,6 +8,16 @@ export interface ConcursoHistorico {
 const STORAGE_KEY = "sniper-historico-extra";
 let cachedData: ConcursoHistorico[] | null = null;
 
+/** Recent contests to seed into the system */
+const SEED_CONTESTS: ConcursoHistorico[] = [
+  { concurso: 3630, dezenas: [2,3,4,5,6,7,8,11,12,14,15,17,19,23,24] },
+  { concurso: 3631, dezenas: [4,7,8,9,12,13,14,15,16,17,19,20,21,23,25] },
+  { concurso: 3632, dezenas: [1,2,3,5,6,9,10,15,17,19,20,21,22,23,25] },
+  { concurso: 3633, dezenas: [1,5,6,7,10,11,13,17,18,20,21,22,23,24,25] },
+  { concurso: 3634, dezenas: [3,4,5,6,7,8,10,11,13,14,16,18,19,21,25] },
+  { concurso: 3635, dezenas: [1,2,3,5,11,12,14,15,16,19,20,22,23,24,25] },
+];
+
 /** Loads the base historical data from the Excel file */
 async function loadBaseData(): Promise<ConcursoHistorico[]> {
   const response = await fetch("/data/lotofacil-historico.xlsx");
