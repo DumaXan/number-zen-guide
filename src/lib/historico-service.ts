@@ -59,12 +59,13 @@ export async function getAllContests(): Promise<ConcursoHistorico[]> {
   }
 
   const extras = getExtraContests();
-  // Merge: add extras that aren't in base
-  const baseIds = new Set(cachedData.map((c) => c.concurso));
+  // Merge: add extras and seed contests that aren't in base
+  const ids = new Set(cachedData.map((c) => c.concurso));
   const merged = [...cachedData];
-  for (const e of extras) {
-    if (!baseIds.has(e.concurso)) {
+  for (const e of [...SEED_CONTESTS, ...extras]) {
+    if (!ids.has(e.concurso)) {
       merged.push(e);
+      ids.add(e.concurso);
     }
   }
   merged.sort((a, b) => a.concurso - b.concurso);
