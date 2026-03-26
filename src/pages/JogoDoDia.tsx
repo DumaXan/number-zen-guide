@@ -172,7 +172,7 @@ const JogoDoDia = () => {
             <AlertDialogTitle className="font-display text-sm tracking-widest uppercase text-primary neon-text text-center">
               Aviso Importante
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-xs text-gray-600 leading-relaxed text-center">
+            <AlertDialogDescription className="text-xs text-muted-foreground leading-relaxed text-center">
               O Sniper Lotofácil não possui nenhuma integração direta com os jogos da Loteria da CAIXA. Apenas os jogos que o apostador deve realizar que são mostrados aqui. Para efetuar o jogo, anote as dezenas aqui geradas, realize a aposta pelo aplicativo de Loterias da CAIXA ou vá até a casa Lotérica mais próxima a você.
             </AlertDialogDescription>
           </AlertDialogHeader>
