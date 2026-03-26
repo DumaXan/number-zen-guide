@@ -167,7 +167,7 @@ const JogoDoDia = () => {
       </div>
 
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
-        <AlertDialogContent className="neon-card border-primary/20 bg-background max-w-sm mx-4">
+        <AlertDialogContent className="border-primary/30 bg-white max-w-sm mx-4 rounded-xl shadow-[0_0_40px_rgba(139,92,246,0.3)]">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display text-sm tracking-widest uppercase text-primary neon-text text-center">
               Aviso Importante
@@ -176,18 +176,18 @@ const JogoDoDia = () => {
               O Sniper Lotofácil não possui nenhuma integração direta com os jogos da Loteria da CAIXA. Apenas os jogos que o apostador deve realizar que são mostrados aqui. Para efetuar o jogo, anote as dezenas aqui geradas, realize a aposta pelo aplicativo de Loterias da CAIXA ou vá até a casa Lotérica mais próxima a você.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex flex-col items-center gap-2 sm:flex-col">
+          <AlertDialogFooter className="flex flex-col items-center gap-3 sm:flex-col w-full">
             <AlertDialogAction
               onClick={() => setShowDisclaimer(false)}
-              className="w-full py-3 rounded-xl neon-card font-display text-xs tracking-widest uppercase text-primary hover:bg-primary/10 transition-all border-primary/30"
+              className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-display text-xs tracking-widest uppercase hover:bg-primary/90 transition-all shadow-md"
             >
               OK
             </AlertDialogAction>
             <a
-              href="https://www.caixa.gov.br/atendimento/aplicativos/app-loterias/Paginas/default.aspx"
+              href="https://play.google.com/store/apps/details?id=br.gov.caixa.loterias.apostas"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3 rounded-xl neon-card font-display text-[10px] tracking-widest uppercase text-muted-foreground hover:bg-primary/10 transition-all flex flex-col items-center justify-center gap-1 border border-muted-foreground/20 text-center"
+              className="w-full py-3 rounded-xl bg-secondary text-secondary-foreground font-display text-[10px] tracking-widest uppercase hover:bg-secondary/80 transition-all flex flex-col items-center justify-center gap-1 shadow-md text-center"
             >
               <span className="flex items-center gap-1">
                 <ExternalLink className="w-3 h-3" />
