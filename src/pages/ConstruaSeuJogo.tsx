@@ -62,6 +62,7 @@ const ConstruaSeuJogo = () => {
       }
     }, 500);
     return () => {
+      clearTimeout(timerId);
       AdMob.removeBanner().catch(() => {});
     };
   }, []);
