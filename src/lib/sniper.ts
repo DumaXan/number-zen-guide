@@ -384,10 +384,10 @@ export function runSniperAlgorithm(ultimo: number[], historicalResults?: number[
   const naoSorteadas = allNums.filter(x => !sorted.includes(x)).sort((a, b) => a - b);
 
   const games: GameResult[] = [
-    gerarFrameLeftShift(sorted),
-    gerarLastHits(sorted),
     gerarNewG3Plus3G2(sorted),
+    gerarLastHits(sorted),
     gerarNewG2Plus3G3(sorted),
+    gerarFrameLeftShift(sorted),
   ];
 
   // Filtro de duplicata histórica
