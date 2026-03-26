@@ -49,7 +49,7 @@ const SimularConcurso = () => {
 
         {/* Result or Selector */}
         {result ? (
-          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus contestNumber={manualConcurso ?? undefined} />
+          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus hideResetButton contestNumber={manualConcurso ?? undefined} />
         ) : (
           <ContestSelector onSubmit={handleManualSubmit} />
         )}
