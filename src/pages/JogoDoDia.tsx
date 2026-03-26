@@ -48,6 +48,8 @@ const SAFETY_MESSAGES = [
 const AD_IDS = [
   "ca-app-pub-3947057911901585/7268303549",
   "ca-app-pub-3947057911901585/2799114495",
+  "ca-app-pub-3947057911901585/7268303549",
+  "ca-app-pub-3947057911901585/2799114495",
 ];
 
 const formatNumbers = (numbers: number[]) =>
@@ -203,12 +205,7 @@ const JogoDoDia = () => {
     setUnlockedGames((prev) => new Set(prev).add(idx));
   };
 
-  // First approved game is always free
-  useEffect(() => {
-    if (approvedGames.length > 0) {
-      setUnlockedGames((prev) => new Set(prev).add(approvedGames[0].idx));
-    }
-  }, [approvedGames]);
+  // All games start locked - user must watch an ad to unlock each one
 
   const handleCopy = async () => {
     let text = "🎯 *SNIPER - Lotofácil*\n\n";
