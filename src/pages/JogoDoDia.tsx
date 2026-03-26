@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, AlertCircle, Hash, Calendar, Clock } from "lucide-react";
+import { Loader2, AlertCircle, Hash, Calendar, Clock, ArrowLeft } from "lucide-react";
 import AdGate from "@/components/AdGate";
 import ResultPanel from "@/components/ResultPanel";
 import { runSniperAlgorithm, SniperResult } from "@/lib/sniper";
@@ -148,9 +148,10 @@ const JogoDoDia = () => {
         {!adCompleted && (
           <button
             onClick={() => navigate("/")}
-            className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-muted text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] mt-4"
+            className="w-full mt-6 py-3 rounded-xl neon-card font-display text-xs tracking-widest uppercase text-primary hover:bg-primary/10 transition-all flex items-center justify-center gap-2"
           >
-            Retornar ao Menu Principal
+            <ArrowLeft className="w-4 h-4" />
+            Voltar para a Página Inicial
           </button>
         )}
       </div>
