@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Crosshair, Shield, ChevronDown, ChevronUp, HelpCircle, Play } from "lucide-react";
+import { Crosshair, Shield, ChevronDown, ChevronUp, HelpCircle, Play, PenTool } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ContestSelector from "@/components/ContestSelector";
 import ResultPanel from "@/components/ResultPanel";
