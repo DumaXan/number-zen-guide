@@ -223,6 +223,14 @@ const ConstruaSeuJogo = () => {
             </button>
           </div>
         )}
+
+        {/* Botão voltar */}
+        <button
+          onClick={() => navigate("/")}
+          className="w-full py-3.5 rounded-lg font-display text-sm tracking-widest uppercase bg-muted text-primary neon-border hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
+        >
+          <ArrowLeft className="w-4 h-4" /> Voltar para a Página Inicial
+        </button>
       </div>
     </div>
   );
