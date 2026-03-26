@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, AlertCircle, Hash, Calendar, Clock, ArrowLeft } from "lucide-react";
+import { Loader2, AlertCircle, Hash, Calendar, Clock, ArrowLeft, ExternalLink } from "lucide-react";
 import AdGate from "@/components/AdGate";
 import ResultPanel from "@/components/ResultPanel";
 import { runSniperAlgorithm, SniperResult } from "@/lib/sniper";
 import { fetchLatestResult } from "@/lib/lotofacil-api";
 import { getAllContests, addNewContest, ConcursoHistorico } from "@/lib/historico-service";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 function isBlockedTime(): boolean {
   const now = new Date();
@@ -20,6 +29,7 @@ const JogoDoDia = () => {
   const [adCompleted, setAdCompleted] = useState(false);
   const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   useEffect(() => {
     getAllContests().then(setHistorico).catch(() => {});
@@ -155,6 +165,36 @@ const JogoDoDia = () => {
           </button>
         )}
       </div>
+
+      <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
+        <AlertDialogContent className="neon-card border-primary/20 bg-background max-w-sm mx-4">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display text-sm tracking-widest uppercase text-primary neon-text text-center">
+              Aviso Importante
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-muted-foreground leading-relaxed text-center">
+              O Sniper Lotofácil não possui nenhuma integração direta com os jogos da Loteria da CAIXA. Apenas os jogos que o apostador deve realizar que são mostrados aqui. Para efetuar o jogo, anote as dezenas aqui geradas, realize a aposta pelo aplicativo de Loterias da CAIXA ou vá até a casa Lotérica mais próxima a você.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex flex-col gap-2 sm:flex-col">
+            <AlertDialogAction
+              onClick={() => setShowDisclaimer(false)}
+              className="w-full py-3 rounded-xl neon-card font-display text-xs tracking-widest uppercase text-primary hover:bg-primary/10 transition-all border-primary/30"
+            >
+              OK
+            </AlertDialogAction>
+            <a
+              href="https://www.caixa.gov.br/atendimento/aplicativos/app-loterias/Paginas/default.aspx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 rounded-xl neon-card font-display text-[10px] tracking-widest uppercase text-muted-foreground hover:bg-primary/10 transition-all flex items-center justify-center gap-2 border border-muted-foreground/20"
+            >
+              <ExternalLink className="w-3 h-3" />
+              Baixar o aplicativo de Loterias da CAIXA
+            </a>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
