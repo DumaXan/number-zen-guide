@@ -48,8 +48,8 @@ const SAFETY_MESSAGES = [
 const AD_IDS = [
   "ca-app-pub-3947057911901585/7268303549",
   "ca-app-pub-3947057911901585/2799114495",
-  "ca-app-pub-3947057911901585/7268303549",
-  "ca-app-pub-3947057911901585/2799114495",
+  "ca-app-pub-3947057911901585/7681248385",
+  "ca-app-pub-3947057911901585/2193251435",
 ];
 
 const formatNumbers = (numbers: number[]) =>
