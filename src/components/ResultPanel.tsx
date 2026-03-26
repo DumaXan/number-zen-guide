@@ -41,6 +41,7 @@ interface ResultPanelProps {
   onReset: () => void;
   hideG2Ad?: boolean;
   hideStatus?: boolean;
+  hideResetButton?: boolean;
   contestNumber?: number;
 }
 
@@ -110,7 +111,7 @@ const RejectedCard = ({
 const formatNumbers = (numbers: number[]) =>
   numbers.map((n) => String(n).padStart(2, "0")).join(" - ");
 
-const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus, contestNumber }: ResultPanelProps) => {
+const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus, hideResetButton, contestNumber }: ResultPanelProps) => {
   const [copied, setCopied] = useState(false);
   const [g2Unlocked, setG2Unlocked] = useState(false);
   const [adPhase, setAdPhase] = useState<"idle" | "loading" | "done">("idle");
@@ -347,13 +348,15 @@ const ResultPanel = ({ result, onReset, hideG2Ad, hideStatus, contestNumber }: R
       )}
 
       {/* Reset */}
-      <button
-        onClick={onReset}
-        className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-muted text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] animate-fade-in-up"
-        style={{ animationDelay: "400ms" }}
-      >
-        Retornar à Página Inicial
-      </button>
+      {!hideResetButton && (
+        <button
+          onClick={onReset}
+          className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-muted text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] animate-fade-in-up"
+          style={{ animationDelay: "400ms" }}
+        >
+          Retornar à Página Inicial
+        </button>
+      )}
     </div>
   );
 };
