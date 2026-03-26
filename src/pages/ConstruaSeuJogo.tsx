@@ -48,7 +48,7 @@ const ConstruaSeuJogo = () => {
   }, []);
 
   useEffect(() => {
-    const showBanner = async () => {
+    const timerId = setTimeout(async () => {
       try {
         const options: BannerAdOptions = {
           adId: "ca-app-pub-3947057911901585/5545338934",
@@ -58,11 +58,11 @@ const ConstruaSeuJogo = () => {
         };
         await AdMob.showBanner(options);
       } catch (e) {
-        console.error("Banner ad error:", e);
+        console.error("Erro ao carregar o banner:", e);
       }
-    };
-    showBanner();
+    }, 500);
     return () => {
+      clearTimeout(timerId);
       AdMob.removeBanner().catch(() => {});
     };
   }, []);
