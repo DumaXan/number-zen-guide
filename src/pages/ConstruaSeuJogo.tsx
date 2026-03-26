@@ -47,6 +47,26 @@ const ConstruaSeuJogo = () => {
     getAllContests().then(setHistorico).catch(() => {});
   }, []);
 
+  useEffect(() => {
+    const showBanner = async () => {
+      try {
+        const options: BannerAdOptions = {
+          adId: "ca-app-pub-3947057911901585/5545338934",
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+          isTesting: false,
+        };
+        await AdMob.showBanner(options);
+      } catch (e) {
+        console.error("Banner ad error:", e);
+      }
+    };
+    showBanner();
+    return () => {
+      AdMob.removeBanner().catch(() => {});
+    };
+  }, []);
+
   const ultimoConcurso = useMemo(() => {
     if (historico.length === 0) return [];
     return historico[historico.length - 1].dezenas;
