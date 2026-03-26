@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Crosshair, Target, RotateCcw } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { getAllContests, ConcursoHistorico } from "@/lib/historico-service";
+import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from "@capacitor-community/admob";
 
 interface Regras {
   soma: boolean;
@@ -44,6 +45,26 @@ const ConstruaSeuJogo = () => {
 
   useEffect(() => {
     getAllContests().then(setHistorico).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const showBanner = async () => {
+      try {
+        const options: BannerAdOptions = {
+          adId: "ca-app-pub-3947057911901585/5545338934",
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+          isTesting: false,
+        };
+        await AdMob.showBanner(options);
+      } catch (e) {
+        console.error("Banner ad error:", e);
+      }
+    };
+    showBanner();
+    return () => {
+      AdMob.removeBanner().catch(() => {});
+    };
   }, []);
 
   const ultimoConcurso = useMemo(() => {
