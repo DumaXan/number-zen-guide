@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Crosshair, Target, RotateCcw } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { getAllContests, ConcursoHistorico } from "@/lib/historico-service";
+import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from "@capacitor-community/admob";
 
 interface Regras {
   soma: boolean;
