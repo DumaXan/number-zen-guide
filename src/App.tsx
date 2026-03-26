@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import JogoDoDia from "./pages/JogoDoDia";
 import ComoJogar from "./pages/ComoJogar";
 import ConstruaSeuJogo from "./pages/ConstruaSeuJogo";
+import SimularConcurso from "./pages/SimularConcurso";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
