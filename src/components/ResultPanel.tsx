@@ -41,6 +41,7 @@ interface ResultPanelProps {
   onReset: () => void;
   hideG2Ad?: boolean;
   hideStatus?: boolean;
+  hideResetButton?: boolean;
   contestNumber?: number;
 }
 
