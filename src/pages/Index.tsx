@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Crosshair, Shield, ChevronDown, ChevronUp, HelpCircle, Play } from "lucide-react";
+import { Crosshair, Shield, ChevronDown, ChevronUp, HelpCircle, Play, PenTool } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ContestSelector from "@/components/ContestSelector";
 import ResultPanel from "@/components/ResultPanel";
@@ -107,6 +107,15 @@ const Index = () => {
                 <ContestSelector onSubmit={handleManualSubmit} />
               </div>
             )}
+
+            {/* Construa Seu Jogo */}
+            <button
+              onClick={() => navigate("/construa-seu-jogo")}
+              className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+            >
+              <PenTool className="w-5 h-5" />
+              Construa Seu Próprio Jogo
+            </button>
 
             {/* Como Jogar */}
             <button
