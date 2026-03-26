@@ -29,6 +29,7 @@ const JogoDoDia = () => {
   const [adCompleted, setAdCompleted] = useState(false);
   const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   useEffect(() => {
     getAllContests().then(setHistorico).catch(() => {});
