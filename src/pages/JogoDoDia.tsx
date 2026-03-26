@@ -144,13 +144,13 @@ const JogoDoDia = () => {
           </>
         )}
 
-        {/* Back button when blocked or error */}
-        {(blocked || error) && (
+        {/* Back button - always visible when not showing results (ResultPanel has its own) */}
+        {!adCompleted && (
           <button
             onClick={() => navigate("/")}
             className="w-full py-3 rounded-lg font-display text-xs tracking-widest uppercase bg-muted text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] mt-4"
           >
-            Retornar à Página Inicial
+            Retornar ao Menu Principal
           </button>
         )}
       </div>
