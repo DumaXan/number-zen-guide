@@ -154,7 +154,7 @@ const JogoDoDia = () => {
   const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
-  const [unlockedGames, setUnlockedGames] = useState<Set<string>>(new Set());
+  const [unlockedGames, setUnlockedGames] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -187,30 +187,34 @@ const JogoDoDia = () => {
   // Build approved games list
   const approvedGames = useMemo(() => {
     if (!autoResult) return [];
-    const games: { key: string; tag: string; game: GameResult }[] = [];
-    if (autoResult.g3.aprovado) games.push({ key: "g3", tag: "G3", game: autoResult.g3 });
-    if (autoResult.g2.aprovado) games.push({ key: "g2", tag: "G2", game: autoResult.g2 });
-    return games;
+    return autoResult.games
+      .map((game, idx) => ({ idx, game }))
+      .filter(({ game }) => game.aprovado);
   }, [autoResult]);
 
-  const bothRejected = autoResult ? !autoResult.g2.aprovado && !autoResult.g3.aprovado : false;
+  const allRejected = autoResult ? approvedGames.length === 0 : false;
 
   const safetyMessage = useMemo(
     () => SAFETY_MESSAGES[Math.floor(Math.random() * SAFETY_MESSAGES.length)],
     []
   );
 
-  const unlockGame = (key: string) => {
-    setUnlockedGames((prev) => new Set(prev).add(key));
+  const unlockGame = (idx: number) => {
+    setUnlockedGames((prev) => new Set(prev).add(idx));
   };
 
-  const allUnlocked = approvedGames.every((g) => unlockedGames.has(g.key));
+  // First approved game is always free
+  useEffect(() => {
+    if (approvedGames.length > 0) {
+      setUnlockedGames((prev) => new Set(prev).add(approvedGames[0].idx));
+    }
+  }, [approvedGames]);
 
   const handleCopy = async () => {
     let text = "🎯 *SNIPER - Lotofácil*\n\n";
     approvedGames.forEach((g, i) => {
-      if (unlockedGames.has(g.key)) {
-        text += `📋 *Jogo ${String(i + 1).padStart(2, "0")}:* (${g.tag})\n${formatNumbers(g.game.numbers)}\n`;
+      if (unlockedGames.has(g.idx)) {
+        text += `📋 *Jogo ${String(i + 1).padStart(2, "0")}:* (${g.game.tag})\n${formatNumbers(g.game.numbers)}\n`;
         text += `Soma: ${g.game.attrs.soma} | ${g.game.attrs.pares}P/${15 - g.game.attrs.pares}I\n\n`;
       }
     });
@@ -226,6 +230,14 @@ const JogoDoDia = () => {
     }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const getStatusLabel = () => {
+    const count = approvedGames.length;
+    if (count === 4) return "Sincronia Total";
+    if (count >= 2) return "Jogos Parciais";
+    if (count === 1) return "Jogo Parcial";
+    return "";
   };
 
   return (
@@ -311,12 +323,12 @@ const JogoDoDia = () => {
             </div>
 
             {/* Games found count */}
-            {autoResult && !bothRejected && (
+            {autoResult && !allRejected && (
               <div className="neon-card rounded-xl p-4 animate-fade-in-up text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Rocket className="w-5 h-5 text-primary animate-pulse-neon" />
                   <h3 className="font-display text-sm tracking-wider text-primary neon-text uppercase">
-                    {approvedGames.length === 2 ? "Sincronia Total" : "Jogo Parcial"}
+                    {getStatusLabel()}
                   </h3>
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -327,8 +339,8 @@ const JogoDoDia = () => {
               </div>
             )}
 
-            {/* Both rejected */}
-            {autoResult && bothRejected && (
+            {/* All rejected */}
+            {autoResult && allRejected && (
               <>
                 <div className="neon-card rounded-xl p-5 text-center animate-fade-in-up border-destructive/30">
                   <div className="flex items-center justify-center gap-2 mb-2">
@@ -359,8 +371,11 @@ const JogoDoDia = () => {
                         Motivos do Descarte
                       </span>
                     </div>
-                    <p className="text-[11px] text-warning/70"><span className="text-warning">→</span> G2: {autoResult.g2.motivo}</p>
-                    <p className="text-[11px] text-warning/70"><span className="text-warning">→</span> G3: {autoResult.g3.motivo}</p>
+                    {autoResult.games.map((g, i) => (
+                      <p key={i} className="text-[11px] text-warning/70">
+                        <span className="text-warning">→</span> {g.tag}: {g.motivo}
+                      </p>
+                    ))}
                   </div>
                 </div>
               </>
@@ -368,25 +383,25 @@ const JogoDoDia = () => {
 
             {/* Individual game cards */}
             {approvedGames.map((g, i) => (
-              <div key={g.key}>
-                {unlockedGames.has(g.key) ? (
+              <div key={g.idx}>
+                {unlockedGames.has(g.idx) ? (
                   <UnlockedGameCard
                     label={`Jogo ${String(i + 1).padStart(2, "0")}`}
-                    tag={g.tag}
+                    tag={g.game.tag}
                     game={g.game}
                   />
                 ) : (
                   <LockedGameCard
                     label={`Jogo ${String(i + 1).padStart(2, "0")}`}
-                    adId={AD_IDS[i] || AD_IDS[0]}
-                    onUnlock={() => unlockGame(g.key)}
+                    adId={AD_IDS[i % AD_IDS.length]}
+                    onUnlock={() => unlockGame(g.idx)}
                   />
                 )}
               </div>
             ))}
 
             {/* Copy button - only when at least one unlocked */}
-            {unlockedGames.size > 0 && !bothRejected && (
+            {unlockedGames.size > 0 && !allRejected && (
               <button
                 onClick={handleCopy}
                 className="w-full py-3.5 rounded-lg font-display text-xs tracking-widest uppercase bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all active:scale-[0.98] flex items-center justify-center gap-2 animate-fade-in-up"
