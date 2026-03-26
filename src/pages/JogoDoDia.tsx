@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, AlertCircle, Hash, Calendar, Clock, ArrowLeft } from "lucide-react";
+import { Loader2, AlertCircle, Hash, Calendar, Clock, ArrowLeft, ExternalLink } from "lucide-react";
 import AdGate from "@/components/AdGate";
 import ResultPanel from "@/components/ResultPanel";
 import { runSniperAlgorithm, SniperResult } from "@/lib/sniper";
 import { fetchLatestResult } from "@/lib/lotofacil-api";
 import { getAllContests, addNewContest, ConcursoHistorico } from "@/lib/historico-service";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 function isBlockedTime(): boolean {
   const now = new Date();
