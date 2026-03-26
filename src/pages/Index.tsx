@@ -1,35 +1,8 @@
-import { useState, useEffect } from "react";
 import { Crosshair, Shield, HelpCircle, Play, PenTool, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getAllContests, ConcursoHistorico } from "@/lib/historico-service";
-import { getAllContests, ConcursoHistorico } from "@/lib/historico-service";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [result, setResult] = useState<SniperResult | null>(null);
-  const [showManual, setShowManual] = useState(false);
-  const [introHidden, setIntroHidden] = useState(false);
-  const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
-  const [manualConcurso, setManualConcurso] = useState<number | null>(null);
-
-  useEffect(() => {
-    getAllContests().then(setHistorico).catch(() => {});
-  }, []);
-
-  const historicoNumbers = historico.map((c) => c.dezenas);
-
-  const handleManualSubmit = (numbers: number[], concurso: number) => {
-    setManualConcurso(concurso);
-    setResult(runSniperAlgorithm(numbers, historicoNumbers));
-    setIntroHidden(true);
-  };
-
-  const handleReset = () => {
-    setResult(null);
-    setShowManual(false);
-    setIntroHidden(false);
-    setManualConcurso(null);
-  };
 
   return (
     <div className="min-h-screen bg-background tactical-grid relative overflow-hidden">
@@ -58,73 +31,53 @@ const Index = () => {
         </header>
 
         {/* Intro text */}
-        {!introHidden ? (
-          <div className="neon-card rounded-xl p-4 mb-6 animate-fade-in-up">
-            <p className="text-xs text-muted-foreground leading-relaxed text-justify">
-              Esse aplicativo foi desenvolvido com base nos estudos do Professor <span className="text-primary font-semibold">Eustáquio Salamanca</span>, mestre em estatística que passou os últimos 8 anos estudando padrões nos jogos da Lotofácil para aumentar as chances de ao menos garantir 11, 12, 13 ou mesmo 14 pontos. Em todos os concursos haverá os jogos prontos que devem ser feitos para o próximo. Pode haver dias que será melhor não fazer nenhuma aposta, pois o algoritmo não acha viável segundo as estatísticas.
-            </p>
-            <p className="text-[10px] text-warning mt-2 font-display tracking-wider uppercase">
-              ⚠️ Jogue com responsabilidade.
-            </p>
-          </div>
-        ) : (
-          <div className="text-center mb-6 animate-fade-in-up">
-            <p className="text-xs text-warning font-display tracking-widest uppercase">
-              ⚠️ Jogue com responsabilidade
-            </p>
-          </div>
-        )}
+        <div className="neon-card rounded-xl p-4 mb-6 animate-fade-in-up">
+          <p className="text-xs text-muted-foreground leading-relaxed text-justify">
+            Esse aplicativo foi desenvolvido com base nos estudos do Professor <span className="text-primary font-semibold">Eustáquio Salamanca</span>, mestre em estatística que passou os últimos 8 anos estudando padrões nos jogos da Lotofácil para aumentar as chances de ao menos garantir 11, 12, 13 ou mesmo 14 pontos. Em todos os concursos haverá os jogos prontos que devem ser feitos para o próximo. Pode haver dias que será melhor não fazer nenhuma aposta, pois o algoritmo não acha viável segundo as estatísticas.
+          </p>
+          <p className="text-[10px] text-warning mt-2 font-display tracking-wider uppercase">
+            ⚠️ Jogue com responsabilidade.
+          </p>
+        </div>
 
-        {/* Manual mode result */}
-        {result && (
-          <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus contestNumber={manualConcurso ?? undefined} />
-        )}
+        {/* Menu options */}
+        <div className="space-y-3">
+          {/* Jogo do Dia */}
+          <button
+            onClick={() => navigate("/jogo-do-dia")}
+            className="w-full py-4 rounded-xl font-display text-sm tracking-widest uppercase neon-card border-2 border-primary/50 neon-border text-primary hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+          >
+            <Play className="w-5 h-5" />
+            Jogo do Dia Pronto
+          </button>
 
-        {/* Menu options - hidden when results are shown */}
-        {!result && (
-          <div className="space-y-3">
-            {/* Jogo do Dia */}
-            <button
-              onClick={() => navigate("/jogo-do-dia")}
-              className="w-full py-4 rounded-xl font-display text-sm tracking-widest uppercase neon-card border-2 border-primary/50 neon-border text-primary hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-            >
-              <Play className="w-5 h-5" />
-              Jogo do Dia Pronto
-            </button>
+          {/* Construa Seu Jogo */}
+          <button
+            onClick={() => navigate("/construa-seu-jogo")}
+            className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+          >
+            <PenTool className="w-5 h-5" />
+            Construa Seu Próprio Jogo
+          </button>
 
-            {/* Construa Seu Jogo */}
-            <button
-              onClick={() => navigate("/construa-seu-jogo")}
-              className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
-            >
-              <PenTool className="w-5 h-5" />
-              Construa Seu Próprio Jogo
-            </button>
+          {/* Simular Outro Concurso */}
+          <button
+            onClick={() => navigate("/simular-concurso")}
+            className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+          >
+            <BarChart3 className="w-5 h-5" />
+            Simular Outro Concurso
+          </button>
 
-            {/* Simular Outro Concurso */}
-            <button
-              onClick={() => setShowManual(!showManual)}
-              className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
-            >
-              {showManual ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              Simular Outro Concurso
-            </button>
-            {showManual && (
-              <div className="mt-1 animate-fade-in-up">
-                <ContestSelector onSubmit={handleManualSubmit} />
-              </div>
-            )}
-
-            {/* Como Jogar */}
-            <button
-              onClick={() => navigate("/como-jogar")}
-              className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
-            >
-              <HelpCircle className="w-5 h-5" />
-              Como Jogar
-            </button>
-          </div>
-        )}
+          {/* Como Jogar */}
+          <button
+            onClick={() => navigate("/como-jogar")}
+            className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
+          >
+            <HelpCircle className="w-5 h-5" />
+            Como Jogar
+          </button>
+        </div>
 
         {/* Privacy & Terms */}
         <div className="mt-4 text-center">
