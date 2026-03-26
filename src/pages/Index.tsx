@@ -1,64 +1,26 @@
 import { useState, useEffect } from "react";
-import { Crosshair, Shield, Loader2, AlertCircle, Calendar, Hash, ChevronDown, ChevronUp, Clock, HelpCircle } from "lucide-react";
+import { Crosshair, Shield, ChevronDown, ChevronUp, HelpCircle, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import ContestSelector from "@/components/ContestSelector";
 import ResultPanel from "@/components/ResultPanel";
-import AdGate from "@/components/AdGate";
 import { runSniperAlgorithm, SniperResult } from "@/lib/sniper";
-import { fetchLatestResult } from "@/lib/lotofacil-api";
-import { getAllContests, addNewContest, ConcursoHistorico } from "@/lib/historico-service";
-
-/** Verifica se o horário atual (Brasília, UTC-3) está entre 20:00 e 22:00 */
-function isBlockedTime(): boolean {
-  const now = new Date();
-  const utcHours = now.getUTCHours();
-  const brasiliaHour = (utcHours - 3 + 24) % 24;
-  return brasiliaHour >= 20 && brasiliaHour < 22;
-}
+import { getAllContests, ConcursoHistorico } from "@/lib/historico-service";
 
 const Index = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<SniperResult | null>(null);
-  const [adCompleted, setAdCompleted] = useState(false);
   const [showManual, setShowManual] = useState(false);
-  const [mode, setMode] = useState<"auto" | "manual">("auto");
   const [introHidden, setIntroHidden] = useState(false);
-  const [blocked, setBlocked] = useState(isBlockedTime());
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
   const [manualConcurso, setManualConcurso] = useState<number | null>(null);
 
-  // Load historical data
   useEffect(() => {
     getAllContests().then(setHistorico).catch(() => {});
   }, []);
 
-  // Re-check blocked time every minute
-  useEffect(() => {
-    const interval = setInterval(() => setBlocked(isBlockedTime()), 60_000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const { data: latest, isLoading, error } = useQuery({
-    queryKey: ["lotofacil-latest"],
-    queryFn: fetchLatestResult,
-    staleTime: 1000 * 60 * 30,
-  });
-
-  // When latest is fetched, add to local historical DB and refresh
-  useEffect(() => {
-    if (latest) {
-      addNewContest(latest.concurso, latest.dezenas);
-      getAllContests().then(setHistorico).catch(() => {});
-    }
-  }, [latest]);
-
   const historicoNumbers = historico.map((c) => c.dezenas);
 
-  const autoResult = latest ? runSniperAlgorithm(latest.dezenas, historicoNumbers) : null;
-
   const handleManualSubmit = (numbers: number[], concurso: number) => {
-    setMode("manual");
     setManualConcurso(concurso);
     setResult(runSniperAlgorithm(numbers, historicoNumbers));
     setIntroHidden(true);
@@ -66,10 +28,9 @@ const Index = () => {
 
   const handleReset = () => {
     setResult(null);
-    setAdCompleted(false);
-    setMode("auto");
     setShowManual(false);
     setIntroHidden(false);
+    setManualConcurso(null);
   };
 
   return (
@@ -116,94 +77,24 @@ const Index = () => {
           </div>
         )}
 
-        {/* Loading */}
-        {isLoading && (
-          <div className="neon-card rounded-xl p-8 text-center animate-fade-in-up">
-            <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-3" />
-            <p className="font-display text-xs tracking-widest text-muted-foreground uppercase">
-              Buscando último concurso...
-            </p>
-          </div>
-        )}
-
-        {/* Error */}
-        {error && (
-          <div className="neon-card rounded-xl p-6 text-center border-destructive/30 animate-fade-in-up mb-4">
-            <AlertCircle className="w-6 h-6 text-destructive mx-auto mb-2" />
-            <p className="text-sm text-destructive mb-1 font-display tracking-wider">Erro ao buscar resultado</p>
-            <p className="text-xs text-muted-foreground">Use a simulação manual abaixo.</p>
-          </div>
-        )}
-
-        {/* Latest contest info */}
-        {latest && !result && (
-          <div className="neon-card rounded-xl p-5 mb-4 animate-fade-in-up">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-display text-xs tracking-widest text-neon-cyan uppercase">
-                Último Concurso
-              </h3>
-              <div className="flex gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Hash className="w-3 h-3" /> {latest.concurso}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3" /> {latest.data}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-1.5 justify-center">
-              {latest.dezenas.map((n) => (
-                <div
-                  key={n}
-                  className="w-7 h-7 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display font-bold text-primary overflow-hidden"
-                >
-                  <span style={{ fontSize: "13px", lineHeight: 1, transform: "scaleY(1.4)", display: "inline-block" }}>
-                    {String(n).padStart(2, "0")}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Blocked time message */}
-        {blocked && !result && (
-          <div className="neon-card rounded-xl p-6 text-center animate-fade-in-up mb-4 border-warning/30">
-            <Clock className="w-8 h-8 text-warning mx-auto mb-3 animate-pulse" />
-            <p className="text-sm font-display tracking-wider text-warning mb-1">
-              Aguardando Sorteio
-            </p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              O sorteio da Lotofácil acontece às <span className="text-primary font-semibold">21h</span>. 
-              Novos jogos estarão disponíveis após a atualização do resultado.
-            </p>
-            <p className="text-[10px] text-muted-foreground mt-3 font-display tracking-wider uppercase">
-              Apostas encerram às 20h · Resultado após 21h
-            </p>
-          </div>
-        )}
-
-        {/* Main flow: auto mode */}
-        {mode === "auto" && latest && !result && !blocked && (
-          <>
-            {!adCompleted ? (
-              <AdGate onComplete={() => { setAdCompleted(true); setIntroHidden(true); }} />
-            ) : (
-              <div className="animate-fade-in-up">
-                <ResultPanel result={autoResult!} onReset={handleReset} />
-              </div>
-            )}
-          </>
-        )}
-
         {/* Manual mode result */}
-        {mode === "manual" && result && (
+        {result && (
           <ResultPanel result={result} onReset={handleReset} hideG2Ad hideStatus contestNumber={manualConcurso ?? undefined} />
         )}
 
-        {/* Manual simulation toggle - hidden during blocked time and when auto results shown */}
-        {!result && !blocked && !adCompleted && (
-          <div className="mt-6">
+        {/* Menu options - hidden when results are shown */}
+        {!result && (
+          <div className="space-y-3">
+            {/* Jogo do Dia */}
+            <button
+              onClick={() => navigate("/jogo-do-dia")}
+              className="w-full py-4 rounded-xl font-display text-sm tracking-widest uppercase neon-card border-2 border-primary/50 neon-border text-primary hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+            >
+              <Play className="w-5 h-5" />
+              Jogo do Dia Pronto
+            </button>
+
+            {/* Simular Outro Concurso */}
             <button
               onClick={() => setShowManual(!showManual)}
               className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
@@ -212,16 +103,12 @@ const Index = () => {
               Simular Outro Concurso
             </button>
             {showManual && (
-              <div className="mt-4 animate-fade-in-up">
+              <div className="mt-1 animate-fade-in-up">
                 <ContestSelector onSubmit={handleManualSubmit} />
               </div>
             )}
-          </div>
-        )}
 
-        {/* Como Jogar - hidden when results shown */}
-        {!adCompleted && !result && (
-          <div className="mt-6">
+            {/* Como Jogar */}
             <button
               onClick={() => navigate("/como-jogar")}
               className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
