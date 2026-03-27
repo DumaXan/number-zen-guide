@@ -108,7 +108,7 @@ const ConstruaSeuJogo = () => {
   return (
     <div className="min-h-screen bg-background tactical-grid relative overflow-hidden">
       <div className="scan-line absolute inset-0 pointer-events-none z-0 h-[200%]" />
-      <div className="relative z-10 max-w-md mx-auto px-4 py-6 pb-16">
+      <div className="relative z-10 max-w-md mx-auto px-4 py-6 pb-32">
         {/* Header */}
         <header className="flex items-center gap-3 mb-6">
           <button onClick={() => navigate("/")} className="text-muted-foreground hover:text-primary transition-colors">
