@@ -44,34 +44,45 @@ const ConstruaSeuJogo = () => {
   const [finalizado, setFinalizado] = useState(false);
 
   useEffect(() => {
-    let timerId: ReturnType<typeof setTimeout>;
-    const prepararAmbiente = async () => {
-      // 1. Carrega os dados do cache (rápido após a primeira vez)
-      try {
-        const data = await getAllContests();
-        setHistorico(data);
-      } catch {}
+    let isMounted = true;
 
-      // 2. Aguarda a tela estabilizar antes de chamar o AdMob
-      timerId = setTimeout(async () => {
+    const inicializarBannerSeguro = async () => {
+      try {
+        // PASSO 1: Limpa qualquer rastro de banners anteriores
+        await AdMob.removeBanner();
+
+        // PASSO 2: Aguarda os dados do histórico carregarem
         try {
-          await AdMob.showBanner({
-            adId: "ca-app-pub-3947057911901585/5545338934",
-            adSize: BannerAdSize.ADAPTIVE_BANNER,
-            position: BannerAdPosition.BOTTOM_CENTER,
-            isTesting: false,
-            margin: 60,
-          });
-        } catch (e) {
-          console.warn("Banner bloqueado ou falhou, mas o Sniper segue operacional.");
-        }
-      }, 1500);
+          const data = await getAllContests();
+          if (isMounted) setHistorico(data);
+        } catch {}
+
+        // PASSO 3: Delay de segurança reforçado (3s)
+        setTimeout(async () => {
+          if (isMounted) {
+            try {
+              console.log("Tentando disparo do banner...");
+              await AdMob.showBanner({
+                adId: "ca-app-pub-3947057911901585/5545338934",
+                adSize: BannerAdSize.ADAPTIVE_BANNER,
+                position: BannerAdPosition.BOTTOM_CENTER,
+                isTesting: false,
+                margin: 60,
+              });
+            } catch (adError) {
+              console.warn("Falha tática no AdMob, mas o Sniper continua na torre.");
+            }
+          }
+        }, 3000);
+      } catch (error) {
+        console.error("Erro na preparação do ambiente:", error);
+      }
     };
 
-    prepararAmbiente();
+    inicializarBannerSeguro();
 
     return () => {
-      clearTimeout(timerId);
+      isMounted = false;
       AdMob.removeBanner().catch(() => {});
     };
   }, []);
