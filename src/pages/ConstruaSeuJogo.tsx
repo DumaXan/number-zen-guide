@@ -44,23 +44,32 @@ const ConstruaSeuJogo = () => {
   const [finalizado, setFinalizado] = useState(false);
 
   useEffect(() => {
-    getAllContests().then(setHistorico).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    const timerId = setTimeout(async () => {
+    let timerId: ReturnType<typeof setTimeout>;
+    const prepararAmbiente = async () => {
+      // 1. Carrega os dados do cache (rápido após a primeira vez)
       try {
-        const options: BannerAdOptions = {
-          adId: "ca-app-pub-3947057911901585/5545338934",
-          adSize: BannerAdSize.ADAPTIVE_BANNER,
-          position: BannerAdPosition.BOTTOM_CENTER,
-          isTesting: false,
-        };
-        await AdMob.showBanner(options);
-      } catch (e) {
-        console.error("Erro ao carregar o banner:", e);
-      }
-    }, 500);
+        const data = await getAllContests();
+        setHistorico(data);
+      } catch {}
+
+      // 2. Aguarda a tela estabilizar antes de chamar o AdMob
+      timerId = setTimeout(async () => {
+        try {
+          await AdMob.showBanner({
+            adId: "ca-app-pub-3947057911901585/5545338934",
+            adSize: BannerAdSize.ADAPTIVE_BANNER,
+            position: BannerAdPosition.BOTTOM_CENTER,
+            isTesting: false,
+            margin: 60,
+          });
+        } catch (e) {
+          console.warn("Banner bloqueado ou falhou, mas o Sniper segue operacional.");
+        }
+      }, 1500);
+    };
+
+    prepararAmbiente();
+
     return () => {
       clearTimeout(timerId);
       AdMob.removeBanner().catch(() => {});
