@@ -78,7 +78,7 @@ export async function getAllContests(): Promise<ConcursoHistorico[]> {
 export function addNewContest(concurso: number, dezenas: number[]): void {
   saveExtraContest({ concurso, dezenas: [...dezenas].sort((a, b) => a - b) });
   // Invalidate cache so next getAllContests picks it up
-  cachedData = null;
+  mergedCache = null;
 }
 
 /** Check if a set of 15 numbers matches any historical result */
