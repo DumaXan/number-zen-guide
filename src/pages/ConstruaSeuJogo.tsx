@@ -50,18 +50,17 @@ const ConstruaSeuJogo = () => {
     // Banner: prepare → respiro → show
     const operacaoBlindada = async () => {
       try {
-        await AdMob.prepareBanner({
+        await AdMob.removeBanner();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        console.log("Campo de batalha pronto. Exibindo banner.");
+        await AdMob.showBanner({
           adId: "ca-app-pub-3947057911901585/5545338934",
           adSize: BannerAdSize.ADAPTIVE_BANNER,
           position: BannerAdPosition.BOTTOM_CENTER,
           isTesting: false,
           margin: 60,
         });
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        console.log("Campo de batalha pronto. Exibindo banner preparado.");
-        await AdMob.showBanner();
       } catch (error) {
         console.warn("Falha no suporte do AdMob, mas o Sniper continua operando.");
       }

@@ -12,9 +12,7 @@ import SimularConcurso from "./pages/SimularConcurso";
 import NotFound from "./pages/NotFound";
 
 // Inicialização global do AdMob — executa uma única vez ao carregar o app
-AdMob.initialize({
-  requestTrackingAuthorization: true,
-}).catch(() => console.warn("AdMob init falhou, mas o app segue."));
+AdMob.initialize().catch(() => console.warn("AdMob init falhou, mas o app segue."));
 
 const queryClient = new QueryClient();
 
