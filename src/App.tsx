@@ -3,12 +3,18 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AdMob } from "@capacitor-community/admob";
 import Index from "./pages/Index";
 import JogoDoDia from "./pages/JogoDoDia";
 import ComoJogar from "./pages/ComoJogar";
 import ConstruaSeuJogo from "./pages/ConstruaSeuJogo";
 import SimularConcurso from "./pages/SimularConcurso";
 import NotFound from "./pages/NotFound";
+
+// Inicialização global do AdMob — executa uma única vez ao carregar o app
+AdMob.initialize({
+  requestTrackingAuthorization: true,
+}).catch(() => console.warn("AdMob init falhou, mas o app segue."));
 
 const queryClient = new QueryClient();
 

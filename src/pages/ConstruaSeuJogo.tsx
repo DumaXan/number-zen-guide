@@ -44,46 +44,33 @@ const ConstruaSeuJogo = () => {
   const [finalizado, setFinalizado] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
+    // Carrega dados do histórico
+    getAllContests().then(data => setHistorico(data)).catch(() => {});
 
-    const inicializarBannerSeguro = async () => {
+    // Banner: prepare → respiro → show
+    const operacaoBlindada = async () => {
       try {
-        // PASSO 1: Limpa qualquer rastro de banners anteriores
-        await AdMob.removeBanner();
+        await AdMob.prepareBanner({
+          adId: "ca-app-pub-3947057911901585/5545338934",
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+          isTesting: false,
+          margin: 60,
+        });
 
-        // PASSO 2: Aguarda os dados do histórico carregarem
-        try {
-          const data = await getAllContests();
-          if (isMounted) setHistorico(data);
-        } catch {}
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // PASSO 3: Delay de segurança reforçado (3s)
-        setTimeout(async () => {
-          if (isMounted) {
-            try {
-              console.log("Tentando disparo do banner...");
-              await AdMob.showBanner({
-                adId: "ca-app-pub-3947057911901585/5545338934",
-                adSize: BannerAdSize.ADAPTIVE_BANNER,
-                position: BannerAdPosition.BOTTOM_CENTER,
-                isTesting: false,
-                margin: 60,
-              });
-            } catch (adError) {
-              console.warn("Falha tática no AdMob, mas o Sniper continua na torre.");
-            }
-          }
-        }, 3000);
+        console.log("Campo de batalha pronto. Exibindo banner preparado.");
+        await AdMob.showBanner();
       } catch (error) {
-        console.error("Erro na preparação do ambiente:", error);
+        console.warn("Falha no suporte do AdMob, mas o Sniper continua operando.");
       }
     };
 
-    inicializarBannerSeguro();
+    operacaoBlindada();
 
     return () => {
-      isMounted = false;
-      AdMob.removeBanner().catch(() => {});
+      AdMob.hideBanner().catch(() => {});
     };
   }, []);
 
