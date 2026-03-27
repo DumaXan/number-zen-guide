@@ -6,7 +6,9 @@ export interface ConcursoHistorico {
 }
 
 const STORAGE_KEY = "sniper-historico-extra";
-let cachedData: ConcursoHistorico[] | null = null;
+
+/** Cache completo (base + extras + seeds), já mergeado e ordenado */
+let mergedCache: ConcursoHistorico[] | null = null;
 
 /** Recent contests to seed into the system */
 const SEED_CONTESTS: ConcursoHistorico[] = [
@@ -51,17 +53,16 @@ function saveExtraContest(contest: ConcursoHistorico): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(extras));
 }
 
-/** Returns all historical contests (base + extras), sorted by concurso */
+/** Returns all historical contests (base + extras), sorted by concurso — com cache otimizado */
 export async function getAllContests(): Promise<ConcursoHistorico[]> {
-  if (!cachedData) {
-    const base = await loadBaseData();
-    cachedData = base;
+  if (mergedCache) {
+    return mergedCache;
   }
 
+  const base = await loadBaseData();
   const extras = getExtraContests();
-  // Merge: add extras and seed contests that aren't in base
-  const ids = new Set(cachedData.map((c) => c.concurso));
-  const merged = [...cachedData];
+  const ids = new Set(base.map((c) => c.concurso));
+  const merged = [...base];
   for (const e of [...SEED_CONTESTS, ...extras]) {
     if (!ids.has(e.concurso)) {
       merged.push(e);
@@ -69,7 +70,8 @@ export async function getAllContests(): Promise<ConcursoHistorico[]> {
     }
   }
   merged.sort((a, b) => a.concurso - b.concurso);
-  return merged;
+  mergedCache = merged;
+  return mergedCache;
 }
 
 /** Add a new contest from the API result to the local store */
