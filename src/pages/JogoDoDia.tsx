@@ -321,11 +321,16 @@ const JogoDoDia = () => {
 
             {/* Games found count */}
             {autoResult && !allRejected && (
-              <div className="neon-card rounded-xl p-4 animate-fade-in-up text-center">
+              <div className="neon-card rounded-xl p-5 animate-fade-in-up text-center border border-primary/30 neon-border">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">
+                    <span className="font-display text-lg font-bold text-primary neon-text">{approvedGames.length}</span>
+                  </div>
+                </div>
                 <p className="text-xs text-muted-foreground">
                   {approvedGames.length === 1
-                    ? "1 jogo encontrado para o próximo concurso."
-                    : `${approvedGames.length} jogos encontrados para o próximo concurso.`}
+                    ? "jogo encontrado para o próximo concurso"
+                    : "jogos encontrados para o próximo concurso"}
                 </p>
               </div>
             )}
