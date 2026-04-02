@@ -322,12 +322,6 @@ const JogoDoDia = () => {
             {/* Games found count */}
             {autoResult && !allRejected && (
               <div className="neon-card rounded-xl p-4 animate-fade-in-up text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Rocket className="w-5 h-5 text-primary animate-pulse-neon" />
-                  <h3 className="font-display text-sm tracking-wider text-primary neon-text uppercase">
-                    {getStatusLabel()}
-                  </h3>
-                </div>
                 <p className="text-xs text-muted-foreground">
                   {approvedGames.length === 1
                     ? "1 jogo encontrado para o próximo concurso."
