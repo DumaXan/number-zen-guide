@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import JogoDoDia from "./pages/JogoDoDia";
 import ComoJogar from "./pages/ComoJogar";
 import ConstruaSeuJogo from "./pages/ConstruaSeuJogo";
-import SimularConcurso from "./pages/SimularConcurso";
+import HistoricoResultados from "./pages/HistoricoResultados";
 import NotFound from "./pages/NotFound";
 
 // Inicialização global do AdMob — executa uma única vez ao carregar o app
