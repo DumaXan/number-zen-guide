@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import JogoDoDia from "./pages/JogoDoDia";
 import ComoJogar from "./pages/ComoJogar";
 import ConstruaSeuJogo from "./pages/ConstruaSeuJogo";
-import SimularConcurso from "./pages/SimularConcurso";
+import HistoricoResultados from "./pages/HistoricoResultados";
 import NotFound from "./pages/NotFound";
 
 // Inicialização global do AdMob — executa uma única vez ao carregar o app
@@ -27,7 +27,7 @@ const App = () => (
           <Route path="/jogo-do-dia" element={<JogoDoDia />} />
           <Route path="/como-jogar" element={<ComoJogar />} />
           <Route path="/construa-seu-jogo" element={<ConstruaSeuJogo />} />
-          <Route path="/simular-concurso" element={<SimularConcurso />} />
+          <Route path="/desempenho" element={<HistoricoResultados />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
