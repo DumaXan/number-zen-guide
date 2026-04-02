@@ -421,7 +421,7 @@ const JogoDoDia = () => {
       </div>
 
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
-        <AlertDialogContent className="border-primary/30 bg-white max-w-sm mx-4 rounded-xl shadow-[0_0_40px_rgba(139,92,246,0.3)]">
+        <AlertDialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] border-primary/30 bg-white max-w-sm mx-4 rounded-xl shadow-[0_0_40px_rgba(139,92,246,0.3)] z-[100]">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display text-sm tracking-widest uppercase text-primary neon-text text-center">
               Aviso Importante
