@@ -60,13 +60,13 @@ const Index = () => {
             Construa Seu Próprio Jogo
           </button>
 
-          {/* Simular Outro Concurso */}
+          {/* Desempenho da Estratégia */}
           <button
-            onClick={() => navigate("/simular-concurso")}
+            onClick={() => navigate("/desempenho")}
             className="w-full py-3 rounded-lg font-display text-[11px] tracking-widest uppercase bg-muted/50 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2"
           >
             <BarChart3 className="w-5 h-5" />
-            Simular Outro Concurso
+            Desempenho da Estratégia
           </button>
 
           {/* Como Jogar */}
