@@ -421,19 +421,19 @@ const JogoDoDia = () => {
       </div>
 
       <AlertDialog open={showDisclaimer} onOpenChange={setShowDisclaimer}>
-        <AlertDialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] border-primary/30 bg-white max-w-sm mx-4 rounded-xl shadow-[0_0_40px_rgba(139,92,246,0.3)] z-[100]">
-          <AlertDialogHeader>
+        <AlertDialogContent className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] border-primary/30 bg-white w-[calc(100%-2rem)] max-w-sm rounded-2xl shadow-[0_0_40px_rgba(139,92,246,0.3)] z-[100] p-5 gap-3">
+          <AlertDialogHeader className="space-y-2">
             <AlertDialogTitle className="font-display text-sm tracking-widest uppercase text-primary neon-text text-center">
               Aviso Importante
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-xs leading-relaxed text-center" style={{ color: "#000" }}>
+            <AlertDialogDescription className="text-[11px] leading-relaxed text-center px-1" style={{ color: "#000" }}>
               O Sniper Lotofácil não possui integração ou vínculo com as Loterias da CAIXA. Nosso sistema gera estratégias e sugestões de dezenas. Para efetivar o seu jogo, você deve anotar as dezenas geradas e realizar a aposta manualmente pelo aplicativo oficial Loterias CAIXA ou em uma Casa Lotérica.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex flex-col items-center gap-3 sm:flex-col w-full">
+          <AlertDialogFooter className="flex flex-col items-center gap-2.5 sm:flex-col w-full mt-1">
             <AlertDialogAction
               onClick={() => setShowDisclaimer(false)}
-              className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-display text-xs tracking-widest uppercase hover:bg-primary/90 transition-all shadow-md"
+              className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-display text-xs tracking-widest uppercase hover:bg-primary/90 transition-all shadow-md"
             >
               OK
             </AlertDialogAction>
@@ -441,7 +441,7 @@ const JogoDoDia = () => {
               href="https://play.google.com/store/apps/details?id=br.gov.caixa.loterias.apostas"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3 rounded-xl bg-secondary text-secondary-foreground font-display text-[10px] tracking-widest uppercase hover:bg-secondary/80 transition-all flex flex-col items-center justify-center gap-1 shadow-md text-center"
+              className="w-full py-2.5 rounded-xl bg-secondary text-secondary-foreground font-display text-[10px] tracking-widest uppercase hover:bg-secondary/80 transition-all flex flex-col items-center justify-center gap-0.5 shadow-md text-center"
             >
               <span className="flex items-center gap-1">
                 <ExternalLink className="w-3 h-3" />
