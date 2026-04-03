@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, BarChart3, Trophy, Target, Loader2 } from "lucide-react";
-import { getAllContests, ConcursoHistorico } from "@/lib/historico-service";
+import { getAllContests, addNewContest, ConcursoHistorico } from "@/lib/historico-service";
+import { fetchLatestResult, fetchContestRange } from "@/lib/lotofacil-api";
 import { runSniperAlgorithm } from "@/lib/sniper";
 
 interface ContestPerformance {
@@ -10,7 +11,6 @@ interface ContestPerformance {
   melhorAcertos: number;
   melhorTag: string;
   jogosAprovados: number;
-  totalJogos: number;
 }
 
 function calcHits(game: number[], resultado: number[]): number {
@@ -37,22 +37,63 @@ const HistoricoResultados = () => {
   const navigate = useNavigate();
   const [historico, setHistorico] = useState<ConcursoHistorico[]>([]);
   const [loading, setLoading] = useState(true);
+  const [latestConcurso, setLatestConcurso] = useState<number | null>(null);
 
   useEffect(() => {
-    getAllContests()
-      .then(setHistorico)
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    async function loadData() {
+      try {
+        // 1. Fetch the latest contest number from API
+        const latest = await fetchLatestResult();
+        setLatestConcurso(latest.concurso);
+
+        // 2. Load local history
+        let allContests = await getAllContests();
+        const maxLocal = allContests.length > 0 ? allContests[allContests.length - 1].concurso : 0;
+
+        // 3. We need contests up to (latest - 1) for performance analysis
+        // We need at least 12 extra contests before the range for the algorithm
+        const neededUpTo = latest.concurso - 1;
+        const neededFrom = neededUpTo - 10 - 1; // 10 contests + 1 for the "previous" input
+
+        // 4. Fetch any missing contests from the API
+        if (maxLocal < neededUpTo) {
+          const fetchFrom = Math.max(maxLocal + 1, neededFrom);
+          const fetched = await fetchContestRange(fetchFrom, neededUpTo);
+          for (const r of fetched) {
+            addNewContest(r.concurso, r.dezenas);
+          }
+          // Also add the latest so the local store is up to date
+          addNewContest(latest.concurso, latest.dezenas);
+          // Reload merged data
+          allContests = await getAllContests();
+        }
+
+        setHistorico(allContests);
+      } catch {
+        // Fallback: just use whatever local data we have
+        const allContests = await getAllContests();
+        setHistorico(allContests);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
   }, []);
 
   const performances = useMemo<ContestPerformance[]>(() => {
-    if (historico.length < 12) return [];
+    if (historico.length < 12 || !latestConcurso) return [];
+
+    // Find the index of the latest contest (to exclude it)
+    const latestIdx = historico.findIndex((c) => c.concurso === latestConcurso);
+    // The last contest to evaluate is the one BEFORE the latest
+    const endIdx = latestIdx >= 0 ? latestIdx - 1 : historico.length - 2;
+
+    if (endIdx < 1) return [];
 
     const results: ContestPerformance[] = [];
-    // Last 10 contests (skip the very last one since it's the "current" one)
-    const startIdx = historico.length - 11;
+    const startIdx = Math.max(1, endIdx - 9); // last 10 contests
 
-    for (let i = startIdx; i < historico.length - 1; i++) {
+    for (let i = startIdx; i <= endIdx; i++) {
       const contestAnterior = historico[i - 1];
       const contestAtual = historico[i];
       const historicoAntes = historico.slice(0, i).map((c) => c.dezenas);
@@ -78,12 +119,11 @@ const HistoricoResultados = () => {
         melhorAcertos: jogosAprovados > 0 ? melhorAcertos : -1,
         melhorTag,
         jogosAprovados,
-        totalJogos: 4,
       });
     }
 
     return results.reverse();
-  }, [historico]);
+  }, [historico, latestConcurso]);
 
   return (
     <div className="min-h-screen bg-background tactical-grid relative overflow-hidden">
@@ -107,7 +147,7 @@ const HistoricoResultados = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <Loader2 className="w-6 h-6 text-primary animate-spin" />
-            <p className="text-xs text-muted-foreground font-display tracking-wider">Calculando...</p>
+            <p className="text-xs text-muted-foreground font-display tracking-wider">Buscando resultados...</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -118,7 +158,6 @@ const HistoricoResultados = () => {
                 style={{ animationDelay: `${idx * 60}ms` }}
               >
                 <div className="flex items-center justify-between">
-                  {/* Left: contest info */}
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col items-center">
                       <span className="font-display text-[10px] tracking-wider text-muted-foreground uppercase">Concurso</span>
@@ -136,8 +175,6 @@ const HistoricoResultados = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Right: hits */}
                   <div className="flex items-center gap-2">
                     {p.melhorAcertos >= 0 ? (
                       <div className="flex items-center gap-1.5">
@@ -191,7 +228,6 @@ const HistoricoResultados = () => {
           </div>
         )}
 
-        {/* Back button */}
         <button
           onClick={() => navigate("/")}
           className="w-full py-3.5 rounded-lg font-display text-sm tracking-widest uppercase bg-muted text-primary neon-border hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-6"
