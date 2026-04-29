@@ -1,7 +1,36 @@
+import { z } from "zod";
+
 export interface LotofacilResult {
   concurso: number;
   data: string;
   dezenas: number[];
+}
+
+const LotofacilApiSchema = z.object({
+  concurso: z.number().int().positive(),
+  data: z.string().optional().default(""),
+  dezenas: z
+    .array(z.union([z.string(), z.number()]))
+    .min(15)
+    .max(15),
+});
+
+function parseResult(raw: unknown): LotofacilResult {
+  const parsed = LotofacilApiSchema.parse(raw);
+  const dezenas = parsed.dezenas
+    .map((d) => (typeof d === "number" ? d : parseInt(d, 10)))
+    .filter((n) => Number.isInteger(n) && n >= 1 && n <= 25)
+    .sort((a, b) => a - b);
+
+  if (dezenas.length !== 15) {
+    throw new Error("Resposta inválida da API: dezenas malformadas");
+  }
+
+  return {
+    concurso: parsed.concurso,
+    data: parsed.data ?? "",
+    dezenas,
+  };
 }
 
 export async function fetchLatestResult(): Promise<LotofacilResult> {
@@ -12,12 +41,7 @@ export async function fetchLatestResult(): Promise<LotofacilResult> {
   }
 
   const data = await res.json();
-
-  return {
-    concurso: data.concurso,
-    data: data.data,
-    dezenas: data.dezenas.map((d: string) => parseInt(d, 10)).sort((a: number, b: number) => a - b),
-  };
+  return parseResult(data);
 }
 
 export async function fetchContestByNumber(num: number): Promise<LotofacilResult | null> {
@@ -25,11 +49,7 @@ export async function fetchContestByNumber(num: number): Promise<LotofacilResult
     const res = await fetch(`https://loteriascaixa-api.herokuapp.com/api/lotofacil/${num}`);
     if (!res.ok) return null;
     const data = await res.json();
-    return {
-      concurso: data.concurso,
-      data: data.data ?? "",
-      dezenas: data.dezenas.map((d: string) => parseInt(d, 10)).sort((a: number, b: number) => a - b),
-    };
+    return parseResult(data);
   } catch {
     return null;
   }

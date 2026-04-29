@@ -35,10 +35,21 @@ async function loadBaseData(): Promise<ConcursoHistorico[]> {
 }
 
 /** Gets extra contests added after the base Excel (stored in localStorage) */
+function isValidContest(c: unknown): c is ConcursoHistorico {
+  if (!c || typeof c !== "object") return false;
+  const obj = c as Record<string, unknown>;
+  if (typeof obj.concurso !== "number" || !Number.isInteger(obj.concurso) || obj.concurso <= 0) return false;
+  if (!Array.isArray(obj.dezenas) || obj.dezenas.length !== 15) return false;
+  return obj.dezenas.every((n) => typeof n === "number" && Number.isInteger(n) && n >= 1 && n <= 25);
+}
+
 function getExtraContests(): ConcursoHistorico[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(isValidContest);
   } catch {
     return [];
   }
