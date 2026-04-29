@@ -15,9 +15,16 @@
     <link rel="preconnect" href="https://loteriascaixa-api.herokuapp.com" crossorigin />
     <link rel="dns-prefetch" href="https://loteriascaixa-api.herokuapp.com" />
 
-    <!-- Load Google Fonts directly to shorten the critical request chain -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" />
-
+    <!-- Load Google Fonts non-render-blocking via media=print swap -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" />
+    </noscript>
     <!-- Inline critical CSS to paint background immediately and avoid FOUC -->
     <style>
       html, body { background-color: #0a0a0a; color: #e5e5e5; margin: 0; }
