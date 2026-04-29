@@ -9,9 +9,14 @@
     <meta name="author" content="Lovable" />
     <link rel="canonical" href="https://number-zen-guide.lovable.app/" />
 
-    <!-- Preconnect to external API used on initial load -->
+    <!-- Preconnect to external origins used on initial load -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://loteriascaixa-api.herokuapp.com" crossorigin />
     <link rel="dns-prefetch" href="https://loteriascaixa-api.herokuapp.com" />
+
+    <!-- Load Google Fonts directly to shorten the critical request chain -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" />
 
     <!-- Inline critical CSS to paint background immediately and avoid FOUC -->
     <style>
