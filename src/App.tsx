@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AdMob } from "@capacitor-community/admob";
 import Index from "./pages/Index";
 
 // Lazy-load non-initial routes to reduce the initial JS bundle and improve LCP
@@ -14,8 +13,20 @@ const ConstruaSeuJogo = lazy(() => import("./pages/ConstruaSeuJogo"));
 const HistoricoResultados = lazy(() => import("./pages/HistoricoResultados"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-// Inicialização global do AdMob — executa uma única vez ao carregar o app
-AdMob.initialize().catch(() => console.warn("AdMob init falhou, mas o app segue."));
+// Defer AdMob to avoid pulling Capacitor SDK into the initial bundle.
+// Only loads on native platforms; harmless no-op on web.
+if (typeof window !== "undefined") {
+  const initAdMob = () =>
+    import("@capacitor-community/admob")
+      .then(({ AdMob }) => AdMob.initialize())
+      .catch(() => console.warn("AdMob init falhou, mas o app segue."));
+
+  if ("requestIdleCallback" in window) {
+    (window as Window & typeof globalThis).requestIdleCallback(initAdMob);
+  } else {
+    setTimeout(initAdMob, 2000);
+  }
+}
 
 const queryClient = new QueryClient();
 
