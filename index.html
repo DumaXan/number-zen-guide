@@ -1,27 +1,35 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>Lovable App</title>
-    <meta name="description" content="Lovable Generated Project">
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>Sniper Lotofácil — Estratégia e Jogo do Dia</title>
+    <meta name="description" content="Gere jogos da Lotofácil com estratégia tática e acompanhe o desempenho dos últimos concursos." />
     <meta name="author" content="Lovable" />
+    <link rel="canonical" href="https://number-zen-guide.lovable.app/" />
 
-    <!-- TODO: Update og:title to match your application name -->
-    
-    
+    <!-- Preconnect to external API used on initial load -->
+    <link rel="preconnect" href="https://loteriascaixa-api.herokuapp.com" crossorigin />
+    <link rel="dns-prefetch" href="https://loteriascaixa-api.herokuapp.com" />
+
+    <!-- Inline critical CSS to paint background immediately and avoid FOUC -->
+    <style>
+      html, body { background-color: #0a0a0a; color: #e5e5e5; margin: 0; }
+      #root { min-height: 100vh; background-color: #0a0a0a; }
+    </style>
+
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d2a31f76-dab8-4820-bd0e-5ff2009ce580/id-preview-aa18b369--af861aaa-d62f-4510-89c7-df0a21a0f83e.lovable.app-1771546479415.png">
+    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d2a31f76-dab8-4820-bd0e-5ff2009ce580/id-preview-aa18b369--af861aaa-d62f-4510-89c7-df0a21a0f83e.lovable.app-1771546479415.png" />
+    <meta property="og:title" content="Sniper Lotofácil — Estratégia e Jogo do Dia" />
+    <meta property="og:description" content="Gere jogos da Lotofácil com estratégia tática e acompanhe o desempenho dos últimos concursos." />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d2a31f76-dab8-4820-bd0e-5ff2009ce580/id-preview-aa18b369--af861aaa-d62f-4510-89c7-df0a21a0f83e.lovable.app-1771546479415.png">
-    <meta property="og:title" content="Lovable App">
-  <meta name="twitter:title" content="Lovable App">
-  <meta property="og:description" content="Lovable Generated Project">
-  <meta name="twitter:description" content="Lovable Generated Project">
-</head>
+    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d2a31f76-dab8-4820-bd0e-5ff2009ce580/id-preview-aa18b369--af861aaa-d62f-4510-89c7-df0a21a0f83e.lovable.app-1771546479415.png" />
+    <meta name="twitter:title" content="Sniper Lotofácil — Estratégia e Jogo do Dia" />
+    <meta name="twitter:description" content="Gere jogos da Lotofácil com estratégia tática e acompanhe o desempenho dos últimos concursos." />
+  </head>
 
   <body>
     <div id="root"></div>
