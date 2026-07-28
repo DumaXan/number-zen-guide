@@ -82,7 +82,7 @@ const Index = () => {
         {/* Privacy & Terms */}
         <div className="mt-4 text-center">
           <a
-            href="https://sites.google.com/view/privacysniperlotofacil"
+            href="https://sites.google.com/view/sniperlotofacil/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] font-display tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors underline underline-offset-4"
