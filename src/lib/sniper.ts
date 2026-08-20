@@ -588,7 +588,7 @@ function avaliarJogoSeguro(
     if (!alvo) continue;
     const v = alvo[reg.key];
     if (v !== undefined && v >= reg.min && v <= reg.max) {
-      return [false, `Gatilho cruzado (${reg.strat}): ${descreverRegra(reg)}`];
+      return [false, `Gatilho cruzado (${reg.strat.replace(/ (Original|Corrigido)$/, "")}): ${descreverRegra(reg)}`];
     }
   }
   return [true, "Aprovado nos filtros"];
@@ -648,7 +648,7 @@ export function runSniperAlgorithm(ultimo: number[], _historicalResults?: number
         metFinal = metGlobais[nomeCorr];
         qtdAprovados++;
       } else {
-        motivo = `${motOrig} | Corrigido: ${motCorr}`;
+        motivo = motOrig;
       }
     }
 
@@ -657,7 +657,7 @@ export function runSniperAlgorithm(ultimo: number[], _historicalResults?: number
       attrs: calcAttrs(jogoFinal),
       aprovado,
       motivo,
-      tag,
+      tag: tag.replace(/ (Original|Corrigido)$/, ""),
       metricas: metFinal,
     });
   }
@@ -689,7 +689,7 @@ export function runSniperAlgorithm(ultimo: number[], _historicalResults?: number
       attrs: calcAttrs(jogoRmse),
       aprovado: aprovadoResgate,
       motivo: motivoResgate,
-      tag: "RMSE Corrigido",
+      tag: "RMSE",
       metricas: metRmse,
     });
   }
