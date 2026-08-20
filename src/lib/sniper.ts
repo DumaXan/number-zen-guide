@@ -588,7 +588,7 @@ function avaliarJogoSeguro(
     if (!alvo) continue;
     const v = alvo[reg.key];
     if (v !== undefined && v >= reg.min && v <= reg.max) {
-      return [false, `Gatilho cruzado (${reg.strat}): ${descreverRegra(reg)}`];
+      return [false, `Gatilho cruzado (${reg.strat.replace(/ (Original|Corrigido)$/, "")}): ${descreverRegra(reg)}`];
     }
   }
   return [true, "Aprovado nos filtros"];
